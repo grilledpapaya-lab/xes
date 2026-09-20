@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>PROJECT 19</title>
   <meta name="description" content="PROJECT 19" />
   <meta name="theme-color" content="#F5F4F0" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -31,12 +32,8 @@
       background: var(--bg);
       color: var(--fg);
       overflow: hidden;
-    }
-    body {
-      margin: 0;
-      height: 100dvh;
-      font-family: var(--font-sans);
-      background-color: var(--bg);
+      min-height: 100%;
+      min-height: 100lvh;
       background-image:
         linear-gradient(to right, var(--grid-major) 1px, transparent 1px),
         linear-gradient(to bottom, var(--grid-major) 1px, transparent 1px),
@@ -44,7 +41,13 @@
         linear-gradient(to bottom, var(--grid-fine) 1px, transparent 1px);
       background-size: 128px 128px, 128px 128px, 32px 32px, 32px 32px;
       background-position: center center;
-      background-attachment: fixed;
+    }
+    body {
+      margin: 0;
+      min-height: 100%;
+      min-height: 100lvh;
+      font-family: var(--font-sans);
+      background: transparent;
     }
     a { color: inherit; text-decoration: none; }
     .wrap { width: min(72rem, calc(100% - 2.5rem)); margin-inline: auto; }
@@ -52,7 +55,7 @@
 
     .page {
       position: relative; z-index: 10;
-      height: 100dvh; display: flex; flex-direction: column; overflow: hidden;
+      height: 100lvh; min-height: 100lvh; display: flex; flex-direction: column; overflow: hidden;
     }
     header, footer { flex-shrink: 0; position: relative; z-index: 20; }
     .nav-row { display: flex; align-items: center; padding-block: 0.7rem; }
@@ -63,9 +66,9 @@
     .brand:hover { color: color-mix(in oklab, var(--fg) 50%, transparent); }
     .spacer { position: relative; flex: 1; min-height: 0; }
     .plate {
-      pointer-events: none; position: absolute; inset: 0.75rem;
+      pointer-events: none; position: absolute; top: 0; right: 0.75rem; bottom: 0.75rem; left: 0.75rem;
     }
-    @media (min-width: 640px) { .plate { inset: 1.25rem; } }
+    @media (min-width: 640px) { .plate { right: 1.25rem; bottom: 1.25rem; left: 1.25rem; } }
     .plate-frame {
       position: absolute; inset: 0;
       border: 1px solid color-mix(in oklab, var(--fg) 12%, transparent);
@@ -111,7 +114,7 @@
     .legal {
       position: relative;
       display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-      padding: 0.75rem 0;
+      padding: 0.75rem 0 max(0.75rem, env(safe-area-inset-bottom));
       font-family: var(--font-mono); font-size: var(--text-label);
       letter-spacing: 0.04em;
     }
@@ -127,7 +130,7 @@
     }
     .credit { text-transform: uppercase; letter-spacing: var(--tracking-kicker); color: var(--muted); }
 
-    #grid { position: fixed; inset: 0; z-index: 2; width: 100%; height: 100%; pointer-events: none; }
+    #grid { position: fixed; inset: 0; z-index: 2; width: 100%; height: 100%; min-height: 100lvh; pointer-events: none; }
     .hud {
       display: none; position: fixed; top: 1.25rem; right: 1.25rem; z-index: 20;
       pointer-events: none; font-family: var(--font-mono); font-size: var(--text-label);
@@ -139,7 +142,7 @@
     @keyframes instrument-spin { to { transform: rotate(360deg); } }
     @media (prefers-reduced-motion: reduce) {
       .instrument-sweep { animation: none; }
-      body { background-attachment: scroll; }
+      html { background-attachment: scroll; }
     }
   </style>
 </head>
@@ -309,7 +312,7 @@
         cx = box ? box.left + box.width / 2 : width / 2;
         cy = box ? box.top + box.height / 2 : height / 2;
         var origin = cx + "px " + cy + "px";
-        document.body.style.backgroundPosition = origin + ", " + origin + ", " + origin + ", " + origin;
+        document.documentElement.style.backgroundPosition = origin + ", " + origin + ", " + origin + ", " + origin;
         var span = box ? Math.min(box.width, box.height) : Math.min(width, height);
         radius = Math.max(84, Math.min(148, span * 0.28));
         instrument.setAttribute("transform", "translate(" + cx + " " + cy + ")");
@@ -528,8 +531,13 @@
         raf = requestAnimationFrame(draw);
       }
       function readSize() {
-        width = window.innerWidth;
-        height = window.innerHeight;
+        var vv = window.visualViewport;
+        width = Math.ceil(Math.max(window.innerWidth, vv ? vv.width : 0));
+        height = Math.ceil(Math.max(
+          window.innerHeight,
+          document.documentElement.clientHeight,
+          vv ? vv.height + vv.offsetTop : 0
+        ));
         svg.setAttribute("viewBox", "0 0 " + width + " " + height);
         layoutInstrument();
       }
@@ -549,6 +557,10 @@
         kick();
       });
       window.addEventListener("resize", function () { readSize(); kick(); });
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener("resize", function () { readSize(); kick(); });
+        window.visualViewport.addEventListener("scroll", function () { readSize(); kick(); });
+      }
     })();
   </script>
 </body>
