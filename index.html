@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Soren Vale</title>
-  <meta name="description" content="Personal index of Soren Vale — independent engineer working on interfaces and systems." />
+  <title>xeshourya</title>
+  <meta name="description" content="xeshourya" />
   <meta name="theme-color" content="#F5F4F0" />
   <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -102,7 +102,8 @@
     }
     nav a:hover { color: var(--fg); }
 
-    .page { position: relative; z-index: 10; }
+    .page { position: relative; z-index: 10; min-height: 100dvh; display: flex; flex-direction: column; }
+    .spacer { flex: 1; }
 
     .hero { padding: 2rem 0 4rem; }
     @media (min-width: 640px) { .hero { padding: 3.5rem 0 6rem; } }
@@ -239,17 +240,8 @@
     .foot-grid {
       display: grid; gap: 2.5rem; padding: 3rem 0 4rem;
     }
-    @media (min-width: 1024px) { .foot-grid { grid-template-columns: 5fr 7fr; gap: 2rem; } }
-    .foot-lead { margin: 1rem 0 0; max-width: 24rem; font-size: 1.125rem; line-height: 1.35; }
-    .foot-sub { margin: 0.75rem 0 0; max-width: 24rem; font-size: 0.875rem; line-height: 1.6; color: var(--muted); }
-    .foot-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-    @media (min-width: 640px) { .foot-cols { grid-template-columns: 1fr 1fr 1fr; } }
-    .foot-cols p, .foot-cols a { margin: 0.75rem 0 0; font-size: 0.875rem; }
-    .foot-cols a {
-      display: inline-flex; align-items: center; min-height: 44px; text-underline-offset: 4px;
-      transition: color 150ms ease-out;
-    }
-    .foot-cols a:hover { color: var(--accent); text-decoration: underline; }
+    @media (min-width: 640px) { .foot-grid.three { grid-template-columns: 1fr 1fr 1fr; gap: 2rem; } }
+    .foot-grid p { margin: 0.75rem 0 0; font-size: 0.875rem; }
     .coord, .rev {
       margin-top: 0.25rem; font-family: var(--font-mono); font-size: var(--text-label);
       letter-spacing: 0.04em; color: var(--muted);
@@ -325,197 +317,40 @@
             <path d="M10 0.5V19.5M0.5 10H19.5" stroke="currentColor" stroke-opacity="0.28" />
             <rect x="10" y="10" width="9.5" height="9.5" fill="currentColor" />
           </svg>
-          <span id="brand-mark">SV / index</span>
+          <span>xeshourya</span>
         </a>
-        <nav aria-label="Primary">
-          <a href="#work">Work</a>
-          <a href="#about">About</a>
-          <a href="#contact">Contact</a>
-        </nav>
       </div>
     </header>
 
-    <main>
-      <section class="hero">
-        <div class="wrap">
-          <div class="hero-inner">
-            <div class="crop" aria-hidden="true">
-              <span class="tl"></span><span class="tr"></span><span class="bl"></span><span class="br"></span>
-            </div>
-            <p class="kicker reveal">01 / Intro</p>
-            <div class="status reveal d1">
-              <span class="status-mark" aria-hidden="true"></span>
-              <span id="status-text"></span>
-            </div>
-            <h1 class="reveal d2" id="name"></h1>
-            <p class="lede reveal d3" id="headline"></p>
-            <dl class="spec reveal d4" id="spec"></dl>
-            <div class="actions reveal d5">
-              <a class="btn btn-solid" id="write-btn" href="mailto:hello@sorenvale.com">
-                Write to me
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
-              </a>
-              <a class="btn btn-outline" href="#work">
-                View work
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
+    <main class="spacer"></main>
 
-      <section id="work" class="block">
-        <div class="wrap">
-          <div class="work-head">
-            <div>
-              <p class="kicker">02 / Selected work</p>
-              <h2>Index of recent projects</h2>
-            </div>
-            <p class="count" id="work-count">03</p>
-          </div>
-          <ul class="work-list" id="work-list"></ul>
-        </div>
-      </section>
-
-      <section id="about" class="block">
-        <div class="wrap">
-          <div class="about-grid">
-            <div>
-              <p class="kicker">03 / About</p>
-              <h2 id="role"></h2>
-            </div>
-            <div class="about-copy" id="about-copy"></div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer id="contact">
+    <footer>
       <div class="wrap">
-        <div class="foot-grid">
+        <div class="foot-grid three">
           <div>
-            <p class="kicker">04 / Colophon</p>
-            <p class="foot-lead">This is an index. It will grow as the work does.</p>
-            <p class="foot-sub">A starting point for a personal site — spare on purpose, built to be filled in.</p>
+            <p class="label">Mark</p>
+            <p>xeshourya</p>
           </div>
-          <div class="foot-cols">
-            <div>
-              <p class="label">Write</p>
-              <a id="email-link" href="mailto:hello@sorenvale.com"></a>
-            </div>
-            <div>
-              <p class="label">Location</p>
-              <p id="location"></p>
-              <p class="coord" id="coordinates"></p>
-            </div>
-            <div>
-              <p class="label">System</p>
-              <p class="clock"><span id="clock-time">00:00:00</span><span class="zone" id="clock-zone">SYS</span></p>
-              <p class="rev">GRID 32 · REV 0.1</p>
-            </div>
+          <div>
+            <p class="label">Site</p>
+            <p class="coord">xeshourya.com</p>
+          </div>
+          <div>
+            <p class="label">System</p>
+            <p class="clock"><span id="clock-time">00:00:00</span><span class="zone" id="clock-zone">SYS</span></p>
+            <p class="rev">GRID 32 · REV 0.2</p>
           </div>
         </div>
         <div class="legal">
-          <p id="copyright"></p>
-          <p class="mark" id="legal-mark"></p>
+          <p>© <span id="year"></span> xeshourya</p>
+          <p class="mark">xeshourya</p>
         </div>
       </div>
     </footer>
   </div>
 
   <script>
-    /* ——— edit this ——— */
-    const SITE = {
-      name: "Soren Vale",
-      mark: "SV",
-      role: "Independent engineer",
-      location: "Brooklyn, NY",
-      coordinates: "40.678° N  ·  73.944° W",
-      email: "hello@sorenvale.com",
-      status: "Available for select work",
-      currently: "Prototyping a spatial notes tool",
-      headline: "I design and ship interfaces for products that have to work every day.",
-      about: [
-        "I work with small teams on the parts of a product that have to be both precise and human — the screens people live in, the systems underneath, the copy that does not get in the way.",
-        "This site is an index, not a pitch. It will fill in as the work does.",
-      ],
-      spec: [
-        { key: "Type", value: "Personal index" },
-        { key: "Focus", value: "Interfaces · systems" },
-        { key: "Based", value: "Brooklyn, NY" },
-        { key: "Status", value: "Available" },
-      ],
-      work: [
-        { id: "atlas", index: "01", title: "Atlas", year: "2025", meta: "Operations platform", note: "Routing, dispatch, and a map that dispatchers actually trust." },
-        { id: "meridian", index: "02", title: "Meridian", year: "2024", meta: "Design system", note: "A token-led system for a payments product used daily by ops teams." },
-        { id: "harbor", index: "03", title: "Harbor", year: "2024", meta: "Research tool", note: "Qualitative research, synthesized without the usual graveyard of notes." },
-      ],
-    };
-
-    document.title = SITE.name;
-    document.getElementById("brand-mark").textContent = SITE.mark + " / index";
-    document.getElementById("status-text").textContent = SITE.status;
-    document.getElementById("name").textContent = SITE.name;
-    document.getElementById("headline").textContent = SITE.headline;
-    document.getElementById("role").textContent = SITE.role;
-    document.getElementById("location").textContent = SITE.location;
-    document.getElementById("coordinates").textContent = SITE.coordinates;
-    document.getElementById("email-link").textContent = SITE.email;
-    document.getElementById("email-link").href = "mailto:" + SITE.email;
-    document.getElementById("write-btn").href = "mailto:" + SITE.email;
-    document.getElementById("copyright").textContent = "© " + new Date().getFullYear() + " " + SITE.name;
-    document.getElementById("legal-mark").textContent = SITE.mark + " · Index · Personal";
-    document.getElementById("work-count").textContent = String(SITE.work.length).padStart(2, "0");
-
-    document.getElementById("spec").innerHTML = SITE.spec.map(function (row) {
-      return "<div><dt class='label'>" + row.key + "</dt><dd>" + row.value + "</dd></div>";
-    }).join("");
-
-    var about = document.getElementById("about-copy");
-    SITE.about.forEach(function (para) {
-      var p = document.createElement("p");
-      p.textContent = para;
-      about.appendChild(p);
-    });
-    var now = document.createElement("p");
-    now.className = "now";
-    now.textContent = "Currently → " + SITE.currently;
-    about.appendChild(now);
-
-    var list = document.getElementById("work-list");
-    var openId = SITE.work[0].id;
-    var activeId = null;
-    var setActive = function () {};
-
-    function renderWork() {
-      list.innerHTML = "";
-      SITE.work.forEach(function (item) {
-        var open = openId === item.id;
-        var hot = open || activeId === item.id;
-        var li = document.createElement("li");
-        li.addEventListener("mouseenter", function () { activeId = item.id; setActive(item.id); renderWork(); });
-        li.addEventListener("mouseleave", function () { activeId = null; setActive(null); renderWork(); });
-        li.innerHTML =
-          '<button type="button" class="work-btn' + (hot ? " is-hot" : "") + '" aria-expanded="' + open + '">' +
-            '<span class="idx">' + item.index + "</span>" +
-            '<span class="work-meta">' +
-              '<span class="work-title">' + item.title + "</span>" +
-              '<span class="year">' + item.year + "</span>" +
-              '<span class="meta">' + item.meta + "</span>" +
-            "</span>" +
-            '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>' +
-          "</button>" +
-          '<div class="note' + (open ? " is-open" : "") + '"><p>' + item.note + "</p></div>";
-        li.querySelector("button").addEventListener("click", function () {
-          openId = open ? null : item.id;
-          activeId = item.id;
-          setActive(item.id);
-          renderWork();
-        });
-        list.appendChild(li);
-      });
-    }
-    renderWork();
+    document.getElementById("year").textContent = String(new Date().getFullYear());
 
     function tickClock() {
       var parts = new Intl.DateTimeFormat(undefined, {
@@ -535,10 +370,10 @@
     (function () {
       var CELL = 32, LINK_RADIUS = 240, STAKE_MS = 1400;
       var NODES = [
-        { id: "atlas", x: 0.16, y: 0.26, label: "ATLAS" },
-        { id: "meridian", x: 0.78, y: 0.2, label: "MERIDIAN" },
-        { id: "harbor", x: 0.86, y: 0.62, label: "HARBOR" },
-        { id: "origin", x: 0.11, y: 0.74, label: "ORIGIN" },
+        { id: "origin", x: 0.16, y: 0.26, label: "ORIGIN" },
+        { id: "north", x: 0.78, y: 0.2, label: "NORTH" },
+        { id: "east", x: 0.86, y: 0.62, label: "EAST" },
+        { id: "datum", x: 0.11, y: 0.74, label: "DATUM" },
         { id: "ref", x: 0.48, y: 0.46, label: "REF" },
       ];
       var svg = document.getElementById("grid");
@@ -556,7 +391,6 @@
       var fg = "#161615", accent = "#2c4a6b";
       var width = 0, height = 0, mx = -1, my = -1, hasPointer = false, raf = 0, running = false;
       var active = null, stakes = [];
-      setActive = function (id) { active = id; kick(); };
 
       var glow = el("rect", { fill: "url(#grid-spot)", opacity: "0" });
       var cells = el("g", {});
