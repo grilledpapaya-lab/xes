@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Soren Vale</title>
+  <meta name="description" content="Personal index of Soren Vale — independent engineer working on interfaces and systems." />
+  <meta name="theme-color" content="#F5F4F0" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600&display=swap" />
+  <style>
+    :root {
+      --bg: #f5f4f0;
+      --fg: #161615;
+      --muted: #6e6c66;
+      --subtle: #9a9890;
+      --border: #dcd9cf;
+      --accent: #2c4a6b;
+      --paper: #fafaf7;
+      --grid-fine: color-mix(in oklab, var(--fg) 7%, transparent);
+      --grid-major: color-mix(in oklab, var(--fg) 13%, transparent);
+      --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+      --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      --text-label: 0.6875rem;
+      --text-kicker: 0.75rem;
+      --text-display: clamp(2.5rem, 1.1rem + 5.2vw, 5.25rem);
+      --tracking-kicker: 0.16em;
+      --tracking-display: -0.035em;
+      --tracking-title: -0.03em;
+      --shadow-border: 0 0 0 1px rgba(22, 22, 21, 0.08), 0 1px 2px -1px rgba(22, 22, 21, 0.06), 0 2px 4px 0 rgba(22, 22, 21, 0.04);
+      --shadow-border-hover: 0 0 0 1px rgba(22, 22, 21, 0.12), 0 1px 2px -1px rgba(22, 22, 21, 0.08), 0 2px 4px 0 rgba(22, 22, 21, 0.06);
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --max: 72rem;
+    }
+
+    * { box-sizing: border-box; }
+    html {
+      -webkit-font-smoothing: antialiased;
+      background: var(--bg);
+      color: var(--fg);
+      overflow-x: clip;
+    }
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      font-family: var(--font-sans);
+      background-color: var(--bg);
+      background-image:
+        linear-gradient(to right, var(--grid-major) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-major) 1px, transparent 1px),
+        linear-gradient(to right, var(--grid-fine) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-fine) 1px, transparent 1px);
+      background-size: 128px 128px, 128px 128px, 32px 32px, 32px 32px;
+      background-attachment: fixed;
+    }
+    @media (pointer: coarse) { body { background-attachment: scroll; } }
+    h1, h2, h3 { text-wrap: balance; }
+    p { text-wrap: pretty; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+    ::selection { background: color-mix(in oklab, var(--accent) 22%, transparent); color: var(--fg); }
+
+    .wrap { width: min(var(--max), calc(100% - 2.5rem)); margin-inline: auto; }
+    @media (min-width: 640px) { .wrap { width: min(var(--max), calc(100% - 4rem)); } }
+
+    .kicker {
+      font-family: var(--font-mono);
+      font-size: var(--text-label);
+      letter-spacing: var(--tracking-kicker);
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0;
+    }
+    .label {
+      font-family: var(--font-mono);
+      font-size: var(--text-label);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin: 0;
+    }
+
+    header { position: relative; z-index: 20; }
+    .nav-row {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; padding-block: 1.25rem;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 0.65rem; min-height: 44px; color: var(--fg);
+    }
+    .brand span {
+      font-family: var(--font-mono); font-size: var(--text-label);
+      letter-spacing: var(--tracking-kicker); text-transform: uppercase; color: var(--muted);
+    }
+    nav a {
+      display: inline-flex; align-items: center; min-height: 44px; padding-inline: 0.65rem;
+      font-family: var(--font-mono); font-size: var(--text-kicker);
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+      transition: color 150ms ease-out;
+    }
+    nav a:hover { color: var(--fg); }
+
+    .page { position: relative; z-index: 10; }
+
+    .hero { padding: 2rem 0 4rem; }
+    @media (min-width: 640px) { .hero { padding: 3.5rem 0 6rem; } }
+    .hero-inner { position: relative; }
+    @media (min-width: 640px) { .hero-inner { padding-inline: 0.75rem; } }
+
+    .crop { display: none; pointer-events: none; position: absolute; inset: 0; }
+    @media (min-width: 640px) { .crop { display: block; } }
+    .crop span {
+      position: absolute; width: 12px; height: 12px; border-color: color-mix(in oklab, var(--fg) 40%, transparent);
+    }
+    .crop .tl { top: -1px; left: -1px; border-top: 1px solid; border-left: 1px solid; }
+    .crop .tr { top: -1px; right: -1px; border-top: 1px solid; border-right: 1px solid; }
+    .crop .bl { bottom: -1px; left: -1px; border-bottom: 1px solid; border-left: 1px solid; }
+    .crop .br { bottom: -1px; right: -1px; border-bottom: 1px solid; border-right: 1px solid; }
+
+    .status { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; margin-top: 1.25rem; }
+    .status-mark { width: 8px; height: 8px; background: var(--accent); animation: pulse-mark 2.4s var(--ease) infinite; }
+    .status span {
+      font-family: var(--font-mono); font-size: var(--text-kicker);
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+    }
+    @keyframes pulse-mark { 0%, 100% { opacity: 1; } 50% { opacity: 0.28; } }
+
+    h1 {
+      margin: 1.5rem 0 0;
+      max-width: 56rem;
+      font-size: var(--text-display);
+      font-weight: 500;
+      letter-spacing: var(--tracking-display);
+      line-height: 1.05;
+    }
+    .lede {
+      margin: 1.25rem 0 0;
+      max-width: 36rem;
+      font-size: 1.125rem;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+    @media (min-width: 640px) { .lede { font-size: 1.25rem; } }
+
+    .spec {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem 1.5rem;
+      margin: 2.5rem 0 0; padding-top: 1.5rem; border-top: 1px solid var(--border);
+    }
+    @media (min-width: 640px) { .spec { grid-template-columns: repeat(4, 1fr); } }
+    .spec dt { margin-bottom: 0.35rem; }
+    .spec dd { margin: 0; font-size: 0.875rem; }
+
+    .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2.5rem; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      height: 48px; padding: 0 14px 0 20px; border-radius: 10px; font-weight: 500; font-size: 1rem;
+      transition: scale 150ms ease-out, background-color 150ms ease-out, box-shadow 150ms ease-out;
+    }
+    .btn:active { scale: 0.96; }
+    .btn svg { width: 16px; height: 16px; }
+    .btn-solid { background: var(--fg); color: var(--bg); }
+    .btn-solid:hover { background: color-mix(in oklab, var(--fg) 90%, transparent); }
+    .btn-outline { background: var(--paper); color: var(--fg); box-shadow: var(--shadow-border); }
+    .btn-outline:hover { box-shadow: var(--shadow-border-hover); background: var(--bg); }
+
+    section.block { padding: 4rem 0; }
+    @media (min-width: 640px) { section.block { padding: 5rem 0; } }
+    .block { scroll-margin-top: 2rem; }
+    .work-head {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);
+    }
+    .work-head h2, .about-grid h2 {
+      margin: 0.5rem 0 0; font-size: 1.5rem; font-weight: 500; letter-spacing: var(--tracking-title);
+    }
+    @media (min-width: 640px) {
+      .work-head h2, .about-grid h2 { font-size: 1.875rem; }
+    }
+    .count {
+      font-family: var(--font-mono); font-size: var(--text-label);
+      font-variant-numeric: tabular-nums; color: var(--subtle);
+    }
+    .work-list { list-style: none; margin: 0; padding: 0; }
+    .work-list li { border-bottom: 1px solid var(--border); }
+    .work-btn {
+      display: flex; width: 100%; min-height: 56px; align-items: flex-start;
+      gap: 0.75rem; padding: 1.25rem 0; text-align: left;
+      transition: background-color 150ms ease-out;
+    }
+    @media (min-width: 640px) { .work-btn { gap: 1.5rem; } }
+    .work-btn:hover, .work-btn.is-hot { background: color-mix(in oklab, var(--fg) 5%, transparent); }
+    .idx {
+      width: 2rem; flex-shrink: 0; padding-top: 0.25rem;
+      font-family: var(--font-mono); font-size: var(--text-label);
+      font-variant-numeric: tabular-nums; color: var(--subtle);
+    }
+    @media (min-width: 640px) { .idx { width: 2.5rem; } }
+    .work-meta { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 0.25rem; }
+    @media (min-width: 640px) {
+      .work-meta { flex-direction: row; align-items: baseline; gap: 1.5rem; }
+    }
+    .work-title { font-size: 1.25rem; font-weight: 500; letter-spacing: var(--tracking-title); }
+    @media (min-width: 640px) { .work-title { width: 11rem; } }
+    .year {
+      font-family: var(--font-mono); font-size: var(--text-kicker);
+      font-variant-numeric: tabular-nums; color: var(--muted);
+    }
+    @media (min-width: 640px) { .year { width: 4rem; } }
+    .meta { flex: 1; font-size: 0.875rem; color: var(--muted); }
+    .chev { width: 16px; height: 16px; margin-top: 0.25rem; flex-shrink: 0; color: var(--subtle); transition: transform 200ms ease-out; }
+    .work-btn[aria-expanded="true"] .chev { transform: rotate(180deg); }
+    .note {
+      display: grid; grid-template-rows: 0fr; transition: grid-template-rows 200ms ease-out;
+    }
+    .note.is-open { grid-template-rows: 1fr; }
+    .note > p {
+      overflow: hidden; margin: 0; padding: 0 0 1.5rem 2.75rem; max-width: 36rem;
+      font-size: 0.875rem; line-height: 1.6; color: var(--muted);
+    }
+    @media (min-width: 640px) { .note > p { padding-left: 5rem; } }
+
+    .about-grid {
+      display: grid; gap: 2rem; padding-top: 2.5rem; border-top: 1px solid var(--border);
+    }
+    @media (min-width: 1024px) { .about-grid { grid-template-columns: 1fr 2fr; gap: 3rem; } }
+    .about-copy p {
+      margin: 1rem 0 0; max-width: 42rem; font-size: 1rem; line-height: 1.65; color: var(--muted);
+    }
+    .about-copy p:first-child { margin-top: 0; }
+    @media (min-width: 640px) { .about-copy p { font-size: 1.125rem; } }
+    .now {
+      margin-top: 2rem; font-family: var(--font-mono); font-size: var(--text-kicker);
+      letter-spacing: 0.04em; color: var(--fg);
+    }
+
+    footer { position: relative; z-index: 10; border-top: 1px solid var(--border); background: color-mix(in oklab, var(--bg) 80%, transparent); }
+    .foot-grid {
+      display: grid; gap: 2.5rem; padding: 3rem 0 4rem;
+    }
+    @media (min-width: 1024px) { .foot-grid { grid-template-columns: 5fr 7fr; gap: 2rem; } }
+    .foot-lead { margin: 1rem 0 0; max-width: 24rem; font-size: 1.125rem; line-height: 1.35; }
+    .foot-sub { margin: 0.75rem 0 0; max-width: 24rem; font-size: 0.875rem; line-height: 1.6; color: var(--muted); }
+    .foot-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    @media (min-width: 640px) { .foot-cols { grid-template-columns: 1fr 1fr 1fr; } }
+    .foot-cols p, .foot-cols a { margin: 0.75rem 0 0; font-size: 0.875rem; }
+    .foot-cols a {
+      display: inline-flex; align-items: center; min-height: 44px; text-underline-offset: 4px;
+      transition: color 150ms ease-out;
+    }
+    .foot-cols a:hover { color: var(--accent); text-decoration: underline; }
+    .coord, .rev {
+      margin-top: 0.25rem; font-family: var(--font-mono); font-size: var(--text-label);
+      letter-spacing: 0.04em; color: var(--muted);
+    }
+    .clock { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+    .clock .zone { margin-left: 0.5rem; color: var(--muted); }
+    .legal {
+      border-top: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 0.5rem;
+      padding: 1rem 0; font-family: var(--font-mono); font-size: var(--text-label);
+      letter-spacing: 0.04em; color: var(--muted);
+    }
+    @media (min-width: 640px) {
+      .legal { flex-direction: row; align-items: center; justify-content: space-between; }
+    }
+    .legal p { margin: 0; }
+    .legal .mark { text-transform: uppercase; letter-spacing: var(--tracking-kicker); }
+
+    #grid {
+      position: fixed; inset: 0; z-index: 0; width: 100%; height: 100%;
+      pointer-events: none;
+    }
+    .hud {
+      display: none; position: fixed; top: 5rem; right: 1.25rem; z-index: 20;
+      pointer-events: none; font-family: var(--font-mono); font-size: var(--text-label);
+      line-height: 1.6; letter-spacing: 0.04em; color: var(--muted);
+    }
+    @media (min-width: 640px) { .hud { display: block; } }
+    .hud .num { font-variant-numeric: tabular-nums; color: var(--fg); }
+
+    .reveal {
+      opacity: 0; transform: translateY(12px); filter: blur(4px);
+      animation: reveal-up 500ms var(--ease) forwards;
+    }
+    .d1 { animation-delay: 40ms; }
+    .d2 { animation-delay: 90ms; }
+    .d3 { animation-delay: 140ms; }
+    .d4 { animation-delay: 200ms; }
+    .d5 { animation-delay: 260ms; }
+    @keyframes reveal-up {
+      to { opacity: 1; transform: none; filter: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal, .d1, .d2, .d3, .d4, .d5 { animation: none; opacity: 1; transform: none; filter: none; }
+      .status-mark { animation: none; }
+      body { background-attachment: scroll; }
+    }
+  </style>
+</head>
+<body>
+  <svg id="grid" aria-hidden="true">
+    <defs>
+      <radialGradient id="grid-spot" gradientUnits="userSpaceOnUse" r="220">
+        <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.10" />
+        <stop offset="45%" stop-color="var(--accent)" stop-opacity="0.04" />
+        <stop offset="100%" stop-color="var(--accent)" stop-opacity="0" />
+      </radialGradient>
+    </defs>
+  </svg>
+  <div class="hud" aria-hidden="true">
+    <div>COL <span id="hud-x" class="num">—</span></div>
+    <div>ROW <span id="hud-y" class="num">—</span></div>
+    <div>GRID 32</div>
+    <div>SNAP ON</div>
+  </div>
+
+  <div id="top" class="page">
+    <header>
+      <div class="wrap nav-row">
+        <a class="brand" href="#top">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <rect x="0.5" y="0.5" width="19" height="19" stroke="currentColor" stroke-opacity="0.55" />
+            <path d="M10 0.5V19.5M0.5 10H19.5" stroke="currentColor" stroke-opacity="0.28" />
+            <rect x="10" y="10" width="9.5" height="9.5" fill="currentColor" />
+          </svg>
+          <span id="brand-mark">SV / index</span>
+        </a>
+        <nav aria-label="Primary">
+          <a href="#work">Work</a>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="wrap">
+          <div class="hero-inner">
+            <div class="crop" aria-hidden="true">
+              <span class="tl"></span><span class="tr"></span><span class="bl"></span><span class="br"></span>
+            </div>
+            <p class="kicker reveal">01 / Intro</p>
+            <div class="status reveal d1">
+              <span class="status-mark" aria-hidden="true"></span>
+              <span id="status-text"></span>
+            </div>
+            <h1 class="reveal d2" id="name"></h1>
+            <p class="lede reveal d3" id="headline"></p>
+            <dl class="spec reveal d4" id="spec"></dl>
+            <div class="actions reveal d5">
+              <a class="btn btn-solid" id="write-btn" href="mailto:hello@sorenvale.com">
+                Write to me
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
+              </a>
+              <a class="btn btn-outline" href="#work">
+                View work
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="work" class="block">
+        <div class="wrap">
+          <div class="work-head">
+            <div>
+              <p class="kicker">02 / Selected work</p>
+              <h2>Index of recent projects</h2>
+            </div>
+            <p class="count" id="work-count">03</p>
+          </div>
+          <ul class="work-list" id="work-list"></ul>
+        </div>
+      </section>
+
+      <section id="about" class="block">
+        <div class="wrap">
+          <div class="about-grid">
+            <div>
+              <p class="kicker">03 / About</p>
+              <h2 id="role"></h2>
+            </div>
+            <div class="about-copy" id="about-copy"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer id="contact">
+      <div class="wrap">
+        <div class="foot-grid">
+          <div>
+            <p class="kicker">04 / Colophon</p>
+            <p class="foot-lead">This is an index. It will grow as the work does.</p>
+            <p class="foot-sub">A starting point for a personal site — spare on purpose, built to be filled in.</p>
+          </div>
+          <div class="foot-cols">
+            <div>
+              <p class="label">Write</p>
+              <a id="email-link" href="mailto:hello@sorenvale.com"></a>
+            </div>
+            <div>
+              <p class="label">Location</p>
+              <p id="location"></p>
+              <p class="coord" id="coordinates"></p>
+            </div>
+            <div>
+              <p class="label">System</p>
+              <p class="clock"><span id="clock-time">00:00:00</span><span class="zone" id="clock-zone">SYS</span></p>
+              <p class="rev">GRID 32 · REV 0.1</p>
+            </div>
+          </div>
+        </div>
+        <div class="legal">
+          <p id="copyright"></p>
+          <p class="mark" id="legal-mark"></p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    /* ——— edit this ——— */
+    const SITE = {
+      name: "Soren Vale",
+      mark: "SV",
+      role: "Independent engineer",
+      location: "Brooklyn, NY",
+      coordinates: "40.678° N  ·  73.944° W",
+      email: "hello@sorenvale.com",
+      status: "Available for select work",
+      currently: "Prototyping a spatial notes tool",
+      headline: "I design and ship interfaces for products that have to work every day.",
+      about: [
+        "I work with small teams on the parts of a product that have to be both precise and human — the screens people live in, the systems underneath, the copy that does not get in the way.",
+        "This site is an index, not a pitch. It will fill in as the work does.",
+      ],
+      spec: [
+        { key: "Type", value: "Personal index" },
+        { key: "Focus", value: "Interfaces · systems" },
+        { key: "Based", value: "Brooklyn, NY" },
+        { key: "Status", value: "Available" },
+      ],
+      work: [
+        { id: "atlas", index: "01", title: "Atlas", year: "2025", meta: "Operations platform", note: "Routing, dispatch, and a map that dispatchers actually trust." },
+        { id: "meridian", index: "02", title: "Meridian", year: "2024", meta: "Design system", note: "A token-led system for a payments product used daily by ops teams." },
+        { id: "harbor", index: "03", title: "Harbor", year: "2024", meta: "Research tool", note: "Qualitative research, synthesized without the usual graveyard of notes." },
+      ],
+    };
+
+    document.title = SITE.name;
+    document.getElementById("brand-mark").textContent = SITE.mark + " / index";
+    document.getElementById("status-text").textContent = SITE.status;
+    document.getElementById("name").textContent = SITE.name;
+    document.getElementById("headline").textContent = SITE.headline;
+    document.getElementById("role").textContent = SITE.role;
+    document.getElementById("location").textContent = SITE.location;
+    document.getElementById("coordinates").textContent = SITE.coordinates;
+    document.getElementById("email-link").textContent = SITE.email;
+    document.getElementById("email-link").href = "mailto:" + SITE.email;
+    document.getElementById("write-btn").href = "mailto:" + SITE.email;
+    document.getElementById("copyright").textContent = "© " + new Date().getFullYear() + " " + SITE.name;
+    document.getElementById("legal-mark").textContent = SITE.mark + " · Index · Personal";
+    document.getElementById("work-count").textContent = String(SITE.work.length).padStart(2, "0");
+
+    document.getElementById("spec").innerHTML = SITE.spec.map(function (row) {
+      return "<div><dt class='label'>" + row.key + "</dt><dd>" + row.value + "</dd></div>";
+    }).join("");
+
+    var about = document.getElementById("about-copy");
+    SITE.about.forEach(function (para) {
+      var p = document.createElement("p");
+      p.textContent = para;
+      about.appendChild(p);
+    });
+    var now = document.createElement("p");
+    now.className = "now";
+    now.textContent = "Currently → " + SITE.currently;
+    about.appendChild(now);
+
+    var list = document.getElementById("work-list");
+    var openId = SITE.work[0].id;
+    var activeId = null;
+    var setActive = function () {};
+
+    function renderWork() {
+      list.innerHTML = "";
+      SITE.work.forEach(function (item) {
+        var open = openId === item.id;
+        var hot = open || activeId === item.id;
+        var li = document.createElement("li");
+        li.addEventListener("mouseenter", function () { activeId = item.id; setActive(item.id); renderWork(); });
+        li.addEventListener("mouseleave", function () { activeId = null; setActive(null); renderWork(); });
+        li.innerHTML =
+          '<button type="button" class="work-btn' + (hot ? " is-hot" : "") + '" aria-expanded="' + open + '">' +
+            '<span class="idx">' + item.index + "</span>" +
+            '<span class="work-meta">' +
+              '<span class="work-title">' + item.title + "</span>" +
+              '<span class="year">' + item.year + "</span>" +
+              '<span class="meta">' + item.meta + "</span>" +
+            "</span>" +
+            '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>' +
+          "</button>" +
+          '<div class="note' + (open ? " is-open" : "") + '"><p>' + item.note + "</p></div>";
+        li.querySelector("button").addEventListener("click", function () {
+          openId = open ? null : item.id;
+          activeId = item.id;
+          setActive(item.id);
+          renderWork();
+        });
+        list.appendChild(li);
+      });
+    }
+    renderWork();
+
+    function tickClock() {
+      var parts = new Intl.DateTimeFormat(undefined, {
+        hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false, timeZoneName: "short",
+      }).formatToParts(new Date());
+      var get = function (type) {
+        var p = parts.find(function (x) { return x.type === type; });
+        return p ? p.value : "";
+      };
+      document.getElementById("clock-time").textContent = get("hour") + ":" + get("minute") + ":" + get("second");
+      document.getElementById("clock-zone").textContent = get("timeZoneName");
+    }
+    tickClock();
+    setInterval(tickClock, 1000);
+
+    /* grid field */
+    (function () {
+      var CELL = 32, LINK_RADIUS = 240, STAKE_MS = 1400;
+      var NODES = [
+        { id: "atlas", x: 0.16, y: 0.26, label: "ATLAS" },
+        { id: "meridian", x: 0.78, y: 0.2, label: "MERIDIAN" },
+        { id: "harbor", x: 0.86, y: 0.62, label: "HARBOR" },
+        { id: "origin", x: 0.11, y: 0.74, label: "ORIGIN" },
+        { id: "ref", x: 0.48, y: 0.46, label: "REF" },
+      ];
+      var svg = document.getElementById("grid");
+      var hudX = document.getElementById("hud-x");
+      var hudY = document.getElementById("hud-y");
+      if (!svg || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      var coarse = window.matchMedia("(pointer: coarse)").matches;
+      var NS = "http://www.w3.org/2000/svg";
+      function el(name, attrs) {
+        var n = document.createElementNS(NS, name);
+        Object.keys(attrs).forEach(function (k) { n.setAttribute(k, attrs[k]); });
+        return n;
+      }
+      function snap(n) { return Math.round(n / CELL) * CELL; }
+      var fg = "#161615", accent = "#2c4a6b";
+      var width = 0, height = 0, mx = -1, my = -1, hasPointer = false, raf = 0, running = false;
+      var active = null, stakes = [];
+      setActive = function (id) { active = id; kick(); };
+
+      var glow = el("rect", { fill: "url(#grid-spot)", opacity: "0" });
+      var cells = el("g", {});
+      var hLine = el("line", { stroke: fg, "stroke-opacity": "0.18", "stroke-width": "1", opacity: "0" });
+      var vLine = el("line", { stroke: fg, "stroke-opacity": "0.18", "stroke-width": "1", opacity: "0" });
+      var reticleH = el("line", { stroke: accent, "stroke-width": "1", opacity: "0" });
+      var reticleV = el("line", { stroke: accent, "stroke-width": "1", opacity: "0" });
+      var snapBox = el("rect", { fill: "none", stroke: accent, "stroke-opacity": "0.55", "stroke-width": "1", opacity: "0" });
+      var links = el("g", {});
+      var nodeMarks = el("g", {});
+      var stakeMarks = el("g", {});
+      [glow, cells, hLine, vLine, reticleH, reticleV, snapBox, links, nodeMarks, stakeMarks].forEach(function (n) { svg.append(n); });
+
+      var cellPool = [];
+      var range = coarse ? 2 : 3;
+      for (var col = -range; col <= range; col++) {
+        for (var row = -range; row <= range; row++) {
+          if (Math.hypot(col, row) > range) continue;
+          var rect = el("rect", { width: String(CELL), height: String(CELL), fill: accent, "fill-opacity": "0" });
+          cells.append(rect);
+          cellPool.push(rect);
+        }
+      }
+      var nodePool = NODES.map(function (node) {
+        var mark = el("rect", { width: "6", height: "6", fill: fg, "fill-opacity": "0.35" });
+        var label = el("text", { fill: accent, "font-family": "IBM Plex Mono, ui-monospace, monospace", "font-size": "10", "font-weight": "500", opacity: "0" });
+        label.textContent = node.label;
+        var link = el("line", { stroke: accent, "stroke-width": "1", "stroke-dasharray": "3 5", opacity: "0" });
+        nodeMarks.append(mark, label);
+        links.append(link);
+        return { node: node, mark: mark, label: label, link: link };
+      });
+      var spot = svg.querySelector("#grid-spot");
+
+      function draw(now) {
+        var sx = hasPointer ? snap(mx) : -1;
+        var sy = hasPointer ? snap(my) : -1;
+        glow.setAttribute("width", String(width));
+        glow.setAttribute("height", String(height));
+        glow.setAttribute("opacity", hasPointer ? "1" : "0");
+        if (spot) {
+          spot.setAttribute("cx", String(mx));
+          spot.setAttribute("cy", String(my));
+          spot.setAttribute("fx", String(mx));
+          spot.setAttribute("fy", String(my));
+        }
+        if (hasPointer) {
+          var i = 0;
+          for (var c = -range; c <= range; c++) {
+            for (var r = -range; r <= range; r++) {
+              var dist = Math.hypot(c, r);
+              if (dist > range) continue;
+              var cell = cellPool[i++];
+              if (!cell) continue;
+              cell.setAttribute("x", String(sx + c * CELL));
+              cell.setAttribute("y", String(sy + r * CELL));
+              cell.setAttribute("fill-opacity", String((1 - dist / (range + 0.25)) * 0.1));
+            }
+          }
+          hLine.setAttribute("x1", "0"); hLine.setAttribute("y1", String(sy + 0.5));
+          hLine.setAttribute("x2", String(width)); hLine.setAttribute("y2", String(sy + 0.5));
+          vLine.setAttribute("x1", String(sx + 0.5)); vLine.setAttribute("y1", "0");
+          vLine.setAttribute("x2", String(sx + 0.5)); vLine.setAttribute("y2", String(height));
+          reticleH.setAttribute("x1", String(sx - 14)); reticleH.setAttribute("y1", String(sy + 0.5));
+          reticleH.setAttribute("x2", String(sx + 14)); reticleH.setAttribute("y2", String(sy + 0.5));
+          reticleV.setAttribute("x1", String(sx + 0.5)); reticleV.setAttribute("y1", String(sy - 14));
+          reticleV.setAttribute("x2", String(sx + 0.5)); reticleV.setAttribute("y2", String(sy + 14));
+          snapBox.setAttribute("x", String(sx - CELL / 2 + 0.5));
+          snapBox.setAttribute("y", String(sy - CELL / 2 + 0.5));
+          snapBox.setAttribute("width", String(CELL - 1));
+          snapBox.setAttribute("height", String(CELL - 1));
+          hLine.setAttribute("opacity", "1"); vLine.setAttribute("opacity", "1");
+          reticleH.setAttribute("opacity", "0.85"); reticleV.setAttribute("opacity", "0.85");
+          snapBox.setAttribute("opacity", "1");
+        } else {
+          cellPool.forEach(function (cell) { cell.setAttribute("fill-opacity", "0"); });
+          hLine.setAttribute("opacity", "0"); vLine.setAttribute("opacity", "0");
+          reticleH.setAttribute("opacity", "0"); reticleV.setAttribute("opacity", "0");
+          snapBox.setAttribute("opacity", "0");
+        }
+        nodePool.forEach(function (item) {
+          var nx = snap(item.node.x * width);
+          var ny = snap(item.node.y * height);
+          var isActive = active === item.node.id;
+          var near = isActive, d = Infinity;
+          if (hasPointer) {
+            d = Math.hypot(mx - nx, my - ny);
+            if (d < LINK_RADIUS) near = true;
+          }
+          item.mark.setAttribute("x", String(nx - 3));
+          item.mark.setAttribute("y", String(ny - 3));
+          item.mark.setAttribute("fill", isActive || near ? accent : fg);
+          item.mark.setAttribute("fill-opacity", isActive ? "0.95" : near ? "0.8" : "0.35");
+          item.label.setAttribute("x", String(nx + 8));
+          item.label.setAttribute("y", String(ny - 8));
+          item.label.setAttribute("opacity", near || isActive ? "0.9" : "0");
+          if (near && hasPointer) {
+            var t = isActive ? 1 : Math.max(0, 1 - d / LINK_RADIUS);
+            item.link.setAttribute("x1", String(nx));
+            item.link.setAttribute("y1", String(ny));
+            item.link.setAttribute("x2", String(sx));
+            item.link.setAttribute("y2", String(sy));
+            item.link.setAttribute("opacity", String(0.15 + t * 0.45));
+            item.link.setAttribute("stroke-dasharray", isActive ? "0" : "3 5");
+            item.link.setAttribute("stroke-width", isActive ? "1.25" : "1");
+          } else {
+            item.link.setAttribute("opacity", "0");
+          }
+        });
+        while (stakeMarks.childNodes.length > stakes.length * 3) stakeMarks.removeChild(stakeMarks.lastChild);
+        for (var s = stakes.length - 1; s >= 0; s--) {
+          var stake = stakes[s];
+          var tt = (now - stake.born) / STAKE_MS;
+          if (tt >= 1) { stakes.splice(s, 1); continue; }
+          var alpha = 1 - tt, rad = 6 + tt * 16;
+          var existingC = stakeMarks.childNodes[s * 3];
+          var existingH = stakeMarks.childNodes[s * 3 + 1];
+          var existingV = stakeMarks.childNodes[s * 3 + 2];
+          var circle = existingC instanceof SVGCircleElement ? existingC : el("circle", { fill: "none", stroke: accent, "stroke-width": "1" });
+          var sH = existingH instanceof SVGLineElement ? existingH : el("line", { stroke: accent, "stroke-width": "1" });
+          var sV = existingV instanceof SVGLineElement ? existingV : el("line", { stroke: accent, "stroke-width": "1" });
+          if (!(existingC instanceof SVGCircleElement)) stakeMarks.append(circle, sH, sV);
+          circle.setAttribute("cx", String(stake.x));
+          circle.setAttribute("cy", String(stake.y));
+          circle.setAttribute("r", String(rad));
+          circle.setAttribute("stroke-opacity", String(alpha * 0.7));
+          sH.setAttribute("x1", String(stake.x - 7)); sH.setAttribute("y1", String(stake.y));
+          sH.setAttribute("x2", String(stake.x + 7)); sH.setAttribute("y2", String(stake.y));
+          sH.setAttribute("stroke-opacity", String(alpha * 0.7));
+          sV.setAttribute("x1", String(stake.x)); sV.setAttribute("y1", String(stake.y - 7));
+          sV.setAttribute("x2", String(stake.x)); sV.setAttribute("y2", String(stake.y + 7));
+          sV.setAttribute("stroke-opacity", String(alpha * 0.7));
+        }
+        if (hasPointer || stakes.length > 0 || active) raf = requestAnimationFrame(draw);
+        else running = false;
+      }
+      function kick() {
+        if (running) return;
+        running = true;
+        raf = requestAnimationFrame(draw);
+      }
+      function readSize() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        svg.setAttribute("viewBox", "0 0 " + width + " " + height);
+      }
+      readSize();
+      kick();
+      window.addEventListener("pointermove", function (e) {
+        hasPointer = true; mx = e.clientX; my = e.clientY;
+        hudX.textContent = String(Math.round(snap(mx) / CELL)).padStart(3, "0");
+        hudY.textContent = String(Math.round(snap(my) / CELL)).padStart(3, "0");
+        kick();
+      }, { passive: true });
+      document.documentElement.addEventListener("mouseleave", function () {
+        hasPointer = false; hudX.textContent = "—"; hudY.textContent = "—"; kick();
+      });
+      window.addEventListener("click", function (e) {
+        if (e.target.closest("a, button")) return;
+        stakes.push({ x: snap(e.clientX), y: snap(e.clientY), born: performance.now() });
+        kick();
+      });
+      window.addEventListener("resize", function () { readSize(); kick(); });
+    })();
+  </script>
+</body>
+</html>
