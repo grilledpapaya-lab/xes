@@ -43,6 +43,7 @@
         linear-gradient(to right, var(--grid-fine) 1px, transparent 1px),
         linear-gradient(to bottom, var(--grid-fine) 1px, transparent 1px);
       background-size: 128px 128px, 128px 128px, 32px 32px, 32px 32px;
+      background-position: center center;
       background-attachment: fixed;
     }
     a { color: inherit; text-decoration: none; }
@@ -225,7 +226,7 @@
         Object.keys(attrs).forEach(function (k) { n.setAttribute(k, attrs[k]); });
         return n;
       }
-      function snap(n) { return Math.round(n / CELL) * CELL; }
+      function snap(n, origin) { return origin + Math.round((n - origin) / CELL) * CELL; }
       var fg = "#161615", accent = "#2c4a6b";
       var width = 0, height = 0, cx = 0, cy = 0, radius = 120, ax = 0, ay = 0, bx = 0, by = 0;
       var mx = -1, my = -1, hasPointer = false, raf = 0, running = false, stakes = [], stations = [];
@@ -307,6 +308,8 @@
         var box = field ? field.getBoundingClientRect() : null;
         cx = box ? box.left + box.width / 2 : width / 2;
         cy = box ? box.top + box.height / 2 : height / 2;
+        var origin = cx + "px " + cy + "px";
+        document.body.style.backgroundPosition = origin + ", " + origin + ", " + origin + ", " + origin;
         var span = box ? Math.min(box.width, box.height) : Math.min(width, height);
         radius = Math.max(84, Math.min(148, span * 0.28));
         instrument.setAttribute("transform", "translate(" + cx + " " + cy + ")");
@@ -344,9 +347,9 @@
         });
         var field = document.querySelector("main");
         var box = field ? field.getBoundingClientRect() : null;
-        ax = snap(box ? box.left + box.width * 0.18 : width * 0.18);
-        ay = snap(box ? box.top + box.height * 0.82 : height * 0.82);
-        bx = snap(box ? box.left + box.width * 0.82 : width * 0.82);
+        ax = snap(box ? box.left + box.width * 0.18 : width * 0.18, cx);
+        ay = snap(box ? box.top + box.height * 0.82 : height * 0.82, cy);
+        bx = snap(box ? box.left + box.width * 0.82 : width * 0.82, cx);
         by = ay;
         base.setAttribute("x1", String(ax)); base.setAttribute("y1", String(ay));
         base.setAttribute("x2", String(bx)); base.setAttribute("y2", String(by));
@@ -363,8 +366,8 @@
       }
 
       function draw(now) {
-        var sx = hasPointer ? snap(mx) : -1;
-        var sy = hasPointer ? snap(my) : -1;
+        var sx = hasPointer ? snap(mx, cx) : -1;
+        var sy = hasPointer ? snap(my, cy) : -1;
         glow.setAttribute("width", String(width));
         glow.setAttribute("height", String(height));
         glow.setAttribute("opacity", hasPointer ? "1" : "0");
@@ -445,8 +448,8 @@
           hudX.textContent = "—"; hudY.textContent = "—"; hudAz.textContent = "—"; hudR.textContent = "—";
         }
         nodePool.forEach(function (item) {
-          var nx = snap(item.node.x * width);
-          var ny = snap(item.node.y * height);
+          var nx = snap(item.node.x * width, cx);
+          var ny = snap(item.node.y * height, cy);
           var near = false, d = Infinity;
           if (hasPointer) {
             d = Math.hypot(mx - nx, my - ny);
@@ -540,8 +543,8 @@
       });
       window.addEventListener("click", function (e) {
         if (e.target.closest("a, button")) return;
-        stakes.push({ x: snap(e.clientX), y: snap(e.clientY), born: performance.now() });
-        stations.push({ x: snap(e.clientX), y: snap(e.clientY) });
+        stakes.push({ x: snap(e.clientX, cx), y: snap(e.clientY, cy), born: performance.now() });
+        stations.push({ x: snap(e.clientX, cx), y: snap(e.clientY, cy) });
         if (stations.length > 8) stations.shift();
         kick();
       });
