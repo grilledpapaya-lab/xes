@@ -107,6 +107,7 @@
       background: color-mix(in oklab, var(--bg) 55%, transparent);
     }
     .legal {
+      position: relative;
       display: flex; align-items: center; justify-content: space-between; gap: 1rem;
       padding: 0.75rem 0;
       font-family: var(--font-mono); font-size: var(--text-label);
@@ -117,6 +118,8 @@
     .clock .meta { margin-left: 0.75rem; color: var(--muted); }
     @media (max-width: 639px) { .clock .meta { display: none; } }
     .mark {
+      position: absolute; left: 50%; transform: translateX(-50%);
+      pointer-events: none;
       text-transform: uppercase; letter-spacing: var(--tracking-kicker);
       color: color-mix(in oklab, var(--fg) 70%, transparent);
     }
@@ -124,7 +127,7 @@
 
     #grid { position: fixed; inset: 0; z-index: 2; width: 100%; height: 100%; pointer-events: none; }
     .hud {
-      display: none; position: fixed; top: 4.75rem; right: 1.25rem; z-index: 20;
+      display: none; position: fixed; top: 1.25rem; right: 1.25rem; z-index: 20;
       pointer-events: none; font-family: var(--font-mono); font-size: var(--text-label);
       line-height: 1.6; letter-spacing: 0.04em; color: var(--muted);
     }
@@ -157,18 +160,6 @@
   </div>
 
   <div id="top" class="page">
-    <header>
-      <div class="wrap nav-row">
-        <a class="brand" href="#top" aria-label="PROJECT 19">
-          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-            <rect x="0.5" y="0.5" width="19" height="19" stroke="currentColor" stroke-opacity="0.7" />
-            <path d="M10 0.5V19.5M0.5 10H19.5" stroke="currentColor" stroke-opacity="0.35" />
-            <rect x="10" y="10" width="9.5" height="9.5" fill="currentColor" fill-opacity="0.55" />
-          </svg>
-        </a>
-      </div>
-    </header>
-
     <main class="spacer">
       <div class="plate" aria-hidden="true">
         <div class="plate-frame"></div>
@@ -214,8 +205,6 @@
 
     (function () {
       var CELL = 32, LINK_RADIUS = 240, STAKE_MS = 1400;
-      var PIGMENT = ["#2c4a6b", "#c45c3e", "#e0b43a", "#3d6b4f", "#6b4a8a"];
-      function pigment(gx, gy) { return PIGMENT[Math.abs(gx * 131 + gy * 41) % PIGMENT.length]; }
       var NODES = [
         { id: "origin", x: 0.18, y: 0.28, label: "ORIGIN" },
         { id: "north", x: 0.82, y: 0.24, label: "NORTH" },
@@ -241,7 +230,6 @@
       var mx = -1, my = -1, hasPointer = false, raf = 0, running = false, stakes = [], stations = [];
 
       var glow = el("rect", { fill: "url(#grid-spot)", opacity: "0" });
-      var field = el("g", {});
       var cells = el("g", {});
       var hLine = el("line", { stroke: fg, "stroke-opacity": "0.16", "stroke-width": "1", opacity: "0" });
       var vLine = el("line", { stroke: fg, "stroke-opacity": "0.16", "stroke-width": "1", opacity: "0" });
@@ -267,8 +255,8 @@
       var triA = el("line", { stroke: accent, "stroke-width": "1", opacity: "0" });
       var triB = el("line", { stroke: accent, "stroke-width": "1", opacity: "0" });
       var triFill = el("polygon", { fill: accent, "fill-opacity": "0", stroke: "none" });
-      var staA = el("rect", { width: "6", height: "6", fill: PIGMENT[1], "fill-opacity": "0.8" });
-      var staB = el("rect", { width: "6", height: "6", fill: PIGMENT[0], "fill-opacity": "0.8" });
+      var staA = el("rect", { width: "6", height: "6", fill: fg, "fill-opacity": "0.45" });
+      var staB = el("rect", { width: "6", height: "6", fill: fg, "fill-opacity": "0.45" });
       var labA = el("text", { fill: fg, "fill-opacity": "0.4", "font-family": "IBM Plex Mono, ui-monospace, monospace", "font-size": "10" });
       labA.textContent = "A";
       var labB = el("text", { fill: fg, "fill-opacity": "0.4", "font-family": "IBM Plex Mono, ui-monospace, monospace", "font-size": "10" });
@@ -286,31 +274,14 @@
       var orbitPath = el("ellipse", { fill: "none", stroke: accent, "stroke-opacity": "0.28", "stroke-width": "1" });
       var apsis = el("line", { stroke: fg, "stroke-opacity": "0.16", "stroke-width": "1", "stroke-dasharray": "4 6" });
       var trail = el("polyline", { fill: "none", stroke: accent, "stroke-opacity": "0.32", "stroke-width": "1" });
-      var craft = el("rect", { width: "5", height: "5", fill: PIGMENT[3], "fill-opacity": "0.95" });
-      var innerCraft = el("circle", { r: "2.2", fill: PIGMENT[2], "fill-opacity": "0.95" });
+      var craft = el("rect", { width: "5", height: "5", fill: accent, "fill-opacity": "0.95" });
+      var innerCraft = el("circle", { r: "2.2", fill: fg, "fill-opacity": "0.55" });
       var ping = el("circle", { fill: "none", stroke: accent, "stroke-width": "1", opacity: "0" });
       var trailPts = [];
       instrument.append(ringOuter, ringMid, ringInner, ticks, cardinals, sweep, coreH, coreV, core, azText, rText, innerCraft);
-      [field, glow, cells, hLine, vLine, reticleH, reticleV, snapBox, links, nodeMarks, triFill, base, triA, triB, dimX, dimY, orbitPath, apsis, ping, trail, azLine, azChord, instrument, craft, staA, staB, labA, labB, traverse, stationMarks, stakeMarks].forEach(function (n) { svg.append(n); });
+      [glow, cells, hLine, vLine, reticleH, reticleV, snapBox, links, nodeMarks, triFill, base, triA, triB, dimX, dimY, orbitPath, apsis, ping, trail, azLine, azChord, instrument, craft, staA, staB, labA, labB, traverse, stationMarks, stakeMarks].forEach(function (n) { svg.append(n); });
 
-      var fieldTiles = [];
-      var cellPool = [], range = coarse ? 4 : 5;
-      function rebuildField() {
-        while (field.firstChild) field.removeChild(field.firstChild);
-        fieldTiles.length = 0;
-        var cols = Math.ceil(width / CELL) + 1, rows = Math.ceil(height / CELL) + 1;
-        for (var gy = 0; gy < rows; gy++) {
-          for (var gx = 0; gx < cols; gx++) {
-            var tile = el("rect", {
-              x: String(gx * CELL + 0.5), y: String(gy * CELL + 0.5),
-              width: String(CELL - 1), height: String(CELL - 1),
-              fill: pigment(gx, gy), "fill-opacity": "1",
-            });
-            field.append(tile);
-            fieldTiles.push({ rect: tile, gx: gx, gy: gy });
-          }
-        }
-      }
+      var cellPool = [], range = coarse ? 2 : 3;
       for (var col = -range; col <= range; col++) {
         for (var row = -range; row <= range; row++) {
           if (Math.hypot(col, row) > range) continue;
@@ -412,8 +383,7 @@
               if (!cell) continue;
               cell.setAttribute("x", String(sx + c * CELL));
               cell.setAttribute("y", String(sy + r * CELL));
-              cell.setAttribute("fill", "#ffffff");
-              cell.setAttribute("fill-opacity", String((1 - dist / (range + 0.25)) * 0.22));
+              cell.setAttribute("fill-opacity", String((1 - dist / (range + 0.25)) * 0.1));
             }
           }
           hLine.setAttribute("x1", "0"); hLine.setAttribute("y1", String(sy + 0.5));
@@ -430,7 +400,6 @@
           snapBox.setAttribute("height", String(CELL - 1));
           hLine.setAttribute("opacity", "1"); vLine.setAttribute("opacity", "1");
           reticleH.setAttribute("opacity", "0.85"); reticleV.setAttribute("opacity", "0.85");
-          snapBox.setAttribute("stroke", pigment(Math.round(sx / CELL), Math.round(sy / CELL)));
           snapBox.setAttribute("opacity", "1");
           var dx = mx - cx, dy = my - cy, distP = Math.hypot(dx, dy);
           var ang = Math.atan2(dx, -dy);
@@ -484,7 +453,7 @@
           }
           item.mark.setAttribute("x", String(nx - 2.5));
           item.mark.setAttribute("y", String(ny - 2.5));
-          item.mark.setAttribute("fill", pigment(Math.round(nx / CELL), Math.round(ny / CELL)));
+          item.mark.setAttribute("fill", near ? accent : fg);
           item.mark.setAttribute("fill-opacity", near ? "0.8" : "0.28");
           item.label.setAttribute("x", String(nx + 8));
           item.label.setAttribute("y", String(ny - 8));
@@ -505,7 +474,7 @@
         stations.forEach(function (s, i) {
           var mark = stationMarks.childNodes[i];
           if (!(mark instanceof SVGRectElement)) {
-            mark = el("rect", { width: "5", height: "5", fill: pigment(Math.round(s.x / CELL), Math.round(s.y / CELL)), "fill-opacity": "0.85" });
+            mark = el("rect", { width: "5", height: "5", fill: accent, "fill-opacity": "0.7" });
             stationMarks.append(mark);
           }
           mark.setAttribute("x", String(s.x - 2.5));
@@ -558,7 +527,6 @@
         width = window.innerWidth;
         height = window.innerHeight;
         svg.setAttribute("viewBox", "0 0 " + width + " " + height);
-        rebuildField();
         layoutInstrument();
       }
       readSize();
