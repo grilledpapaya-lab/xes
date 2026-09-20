@@ -102,8 +102,8 @@
     }
     nav a:hover { color: var(--fg); }
 
-    .page { position: relative; z-index: 10; min-height: 100dvh; display: flex; flex-direction: column; }
-    .spacer { flex: 1; }
+    .page { position: relative; z-index: 10; height: 100dvh; min-height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+    .spacer { flex: 1; min-height: 0; }
 
     .hero { padding: 2rem 0 4rem; }
     @media (min-width: 640px) { .hero { padding: 3.5rem 0 6rem; } }
@@ -236,26 +236,27 @@
       letter-spacing: 0.04em; color: var(--fg);
     }
 
-    footer { position: relative; z-index: 10; border-top: 1px solid var(--border); background: color-mix(in oklab, var(--bg) 80%, transparent); }
+    footer { position: relative; z-index: 10; flex-shrink: 0; border-top: 1px solid var(--border); background: color-mix(in oklab, var(--bg) 80%, transparent); }
     .foot-grid {
-      display: grid; gap: 2.5rem; padding: 3rem 0 4rem;
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; padding: 1rem 0 1.1rem;
     }
-    @media (min-width: 640px) { .foot-grid.three { grid-template-columns: 1fr 1fr 1fr; gap: 2rem; } }
-    .foot-grid p { margin: 0.75rem 0 0; font-size: 0.875rem; }
+    @media (min-width: 640px) { .foot-grid.three { gap: 2rem; padding: 1.5rem 0; } }
+    .foot-grid p { margin: 0.4rem 0 0; font-size: 0.875rem; }
+    .rev { display: none; }
+    @media (min-width: 640px) { .rev { display: block; } }
     .coord, .rev {
       margin-top: 0.25rem; font-family: var(--font-mono); font-size: var(--text-label);
       letter-spacing: 0.04em; color: var(--muted);
     }
     .clock { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
-    .clock .zone { margin-left: 0.5rem; color: var(--muted); }
+    .clock .zone { display: none; margin-left: 0.5rem; color: var(--muted); }
+    @media (min-width: 640px) { .clock .zone { display: inline; } }
     .legal {
       border-top: 1px solid var(--border);
-      display: flex; flex-direction: column; gap: 0.5rem;
-      padding: 1rem 0; font-family: var(--font-mono); font-size: var(--text-label);
+      display: flex; flex-direction: row; align-items: center; justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.7rem 0; font-family: var(--font-mono); font-size: var(--text-label);
       letter-spacing: 0.04em; color: var(--muted);
-    }
-    @media (min-width: 640px) {
-      .legal { flex-direction: row; align-items: center; justify-content: space-between; }
     }
     .legal p { margin: 0; }
     .legal .mark { text-transform: uppercase; letter-spacing: var(--tracking-kicker); }
