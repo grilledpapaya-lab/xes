@@ -4,12 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PROJECT 19</title>
-  <meta name="description" content="PROJECT 19 — Opulence. AI, robotics, spaceships, energy." />
+  <meta name="description" content="PROJECT 19" />
   <meta name="theme-color" content="#F5F4F0" />
   <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil:wght@700&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600&display=swap" />
   <style>
     :root {
       --bg: #f5f4f0;
@@ -123,34 +123,6 @@
     .credit { text-transform: uppercase; letter-spacing: var(--tracking-kicker); color: var(--muted); }
 
     #grid { position: fixed; inset: 0; z-index: 2; width: 100%; height: 100%; pointer-events: none; }
-    .watermark {
-      position: fixed; inset: 0; z-index: 1;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      pointer-events: none; padding: 0 1.5rem;
-    }
-    .watermark .company {
-      margin: 0;
-      font-family: "Big Shoulders Stencil", Impact, "Arial Narrow", sans-serif;
-      font-size: clamp(2.75rem, 13vw, 9.5rem);
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      line-height: 0.82;
-      color: color-mix(in oklab, var(--fg) 9%, transparent);
-    }
-    .watermark .rule {
-      width: min(14rem, 50vw); height: 1px; margin: 1.15rem 0 0.9rem;
-      background: color-mix(in oklab, var(--fg) 15%, transparent);
-    }
-    .watermark .scope {
-      margin: 0;
-      display: flex; flex-wrap: wrap; justify-content: center; gap: 0.35rem 1.6rem;
-      font-family: var(--font-mono); font-size: 10px;
-      letter-spacing: 0.28em; text-transform: uppercase;
-      color: color-mix(in oklab, var(--fg) 32%, transparent);
-    }
-    @media (min-width: 640px) {
-      .watermark .scope { font-size: var(--text-label); letter-spacing: 0.34em; gap: 0.35rem 2rem; }
-    }
     .hud {
       display: none; position: fixed; top: 4.75rem; right: 1.25rem; z-index: 20;
       pointer-events: none; font-family: var(--font-mono); font-size: var(--text-label);
@@ -167,16 +139,6 @@
   </style>
 </head>
 <body>
-  <div class="watermark" aria-hidden="true">
-    <p class="company">OPULENCE</p>
-    <span class="rule"></span>
-    <p class="scope">
-      <span>AI</span>
-      <span>ROBOTICS</span>
-      <span>SPACESHIPS</span>
-      <span>ENERGY</span>
-    </p>
-  </div>
   <svg id="grid" aria-hidden="true">
     <defs>
       <radialGradient id="grid-spot" gradientUnits="userSpaceOnUse" r="220">
@@ -317,9 +279,16 @@
       var core = el("rect", { width: "5", height: "5", fill: accent, "fill-opacity": "0.85" });
       var azText = el("text", { fill: accent, "font-family": "IBM Plex Mono, ui-monospace, monospace", "font-size": "10", "font-weight": "500", "text-anchor": "middle", opacity: "0" });
       var rText = el("text", { fill: fg, "font-family": "IBM Plex Mono, ui-monospace, monospace", "font-size": "10", "text-anchor": "middle", opacity: "0.35" });
-      rText.textContent = "VOID";
-      instrument.append(ringOuter, ringMid, ringInner, ticks, cardinals, sweep, coreH, coreV, core, azText, rText);
-      [glow, cells, hLine, vLine, reticleH, reticleV, snapBox, links, nodeMarks, triFill, base, triA, triB, dimX, dimY, azLine, azChord, instrument, staA, staB, labA, labB, traverse, stationMarks, stakeMarks].forEach(function (n) { svg.append(n); });
+      rText.textContent = "";
+      var orbitPath = el("ellipse", { fill: "none", stroke: accent, "stroke-opacity": "0.28", "stroke-width": "1" });
+      var apsis = el("line", { stroke: fg, "stroke-opacity": "0.16", "stroke-width": "1", "stroke-dasharray": "4 6" });
+      var trail = el("polyline", { fill: "none", stroke: accent, "stroke-opacity": "0.32", "stroke-width": "1" });
+      var craft = el("rect", { width: "5", height: "5", fill: accent, "fill-opacity": "0.95" });
+      var innerCraft = el("circle", { r: "2.2", fill: fg, "fill-opacity": "0.55" });
+      var ping = el("circle", { fill: "none", stroke: accent, "stroke-width": "1", opacity: "0" });
+      var trailPts = [];
+      instrument.append(ringOuter, ringMid, ringInner, ticks, cardinals, sweep, coreH, coreV, core, azText, rText, innerCraft);
+      [glow, cells, hLine, vLine, reticleH, reticleV, snapBox, links, nodeMarks, triFill, base, triA, triB, dimX, dimY, orbitPath, apsis, ping, trail, azLine, azChord, instrument, craft, staA, staB, labA, labB, traverse, stationMarks, stakeMarks].forEach(function (n) { svg.append(n); });
 
       var cellPool = [], range = coarse ? 2 : 3;
       for (var col = -range; col <= range; col++) {
@@ -393,6 +362,12 @@
         staB.setAttribute("x", String(bx - 3)); staB.setAttribute("y", String(by - 3));
         labA.setAttribute("x", String(ax - 10)); labA.setAttribute("y", String(ay + 16));
         labB.setAttribute("x", String(bx + 6)); labB.setAttribute("y", String(by + 16));
+        var oa = radius * 1.72, ob = radius * 0.58;
+        orbitPath.setAttribute("cx", String(cx)); orbitPath.setAttribute("cy", String(cy));
+        orbitPath.setAttribute("rx", String(oa)); orbitPath.setAttribute("ry", String(ob));
+        apsis.setAttribute("x1", String(cx - oa)); apsis.setAttribute("y1", String(cy));
+        apsis.setAttribute("x2", String(cx + oa)); apsis.setAttribute("y2", String(cy));
+        ping.setAttribute("cx", String(cx)); ping.setAttribute("cy", String(cy));
       }
 
       function draw(now) {
@@ -474,7 +449,7 @@
           dimX.setAttribute("opacity", "0"); dimY.setAttribute("opacity", "0");
           sweep.setAttribute("opacity", coarse ? "0" : "1");
           azText.textContent = ""; azText.setAttribute("opacity", "0");
-          rText.textContent = "VOID"; rText.setAttribute("opacity", "0.32");
+          rText.textContent = ""; rText.setAttribute("opacity", "0");
           hudX.textContent = "—"; hudY.textContent = "—"; hudAz.textContent = "—"; hudR.textContent = "—";
         }
         nodePool.forEach(function (item) {
@@ -538,8 +513,19 @@
           sV.setAttribute("x2", String(stake.x)); sV.setAttribute("y2", String(stake.y + 7));
           sV.setAttribute("stroke-opacity", String(alpha * 0.7));
         }
-        if (hasPointer || stakes.length > 0) raf = requestAnimationFrame(draw);
-        else running = false;
+        var oa = radius * 1.72, ob = radius * 0.58, ang = now / 2400;
+        var px = cx + Math.cos(ang) * oa, py = cy + Math.sin(ang) * ob;
+        craft.setAttribute("x", String(px - 2.5)); craft.setAttribute("y", String(py - 2.5));
+        trailPts.push({ x: px, y: py });
+        if (trailPts.length > 96) trailPts.shift();
+        trail.setAttribute("points", trailPts.map(function (p) { return p.x + "," + p.y; }).join(" "));
+        var iang = now / -1100, ir = radius * 0.62;
+        innerCraft.setAttribute("cx", String(Math.sin(iang) * ir));
+        innerCraft.setAttribute("cy", String(-Math.cos(iang) * ir));
+        var u = (now % 4200) / 4200;
+        ping.setAttribute("r", String(radius * 0.18 + u * radius * 2.1));
+        ping.setAttribute("stroke-opacity", String((1 - u) * 0.38));
+        raf = requestAnimationFrame(draw);
       }
       function kick() {
         if (running) return;
