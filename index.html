@@ -214,7 +214,7 @@
 
     (function () {
       var CELL = 32, LINK_RADIUS = 240, STAKE_MS = 1400;
-      var PIGMENT = ["#3f6f8a", "#c46b4a", "#6f8f5a", "#c4a056", "#7a5e8a", "#b56b73", "#4e8a82", "#8a6a4a"];
+      var PIGMENT = ["#2c4a6b", "#c45c3e", "#e0b43a", "#3d6b4f", "#6b4a8a"];
       function pigment(gx, gy) { return PIGMENT[Math.abs(gx * 131 + gy * 41) % PIGMENT.length]; }
       var NODES = [
         { id: "origin", x: 0.18, y: 0.28, label: "ORIGIN" },
@@ -287,7 +287,7 @@
       var apsis = el("line", { stroke: fg, "stroke-opacity": "0.16", "stroke-width": "1", "stroke-dasharray": "4 6" });
       var trail = el("polyline", { fill: "none", stroke: accent, "stroke-opacity": "0.32", "stroke-width": "1" });
       var craft = el("rect", { width: "5", height: "5", fill: PIGMENT[3], "fill-opacity": "0.95" });
-      var innerCraft = el("circle", { r: "2.2", fill: PIGMENT[6], "fill-opacity": "0.85" });
+      var innerCraft = el("circle", { r: "2.2", fill: PIGMENT[2], "fill-opacity": "0.95" });
       var ping = el("circle", { fill: "none", stroke: accent, "stroke-width": "1", opacity: "0" });
       var trailPts = [];
       instrument.append(ringOuter, ringMid, ringInner, ticks, cardinals, sweep, coreH, coreV, core, azText, rText, innerCraft);
@@ -304,7 +304,7 @@
             var tile = el("rect", {
               x: String(gx * CELL + 0.5), y: String(gy * CELL + 0.5),
               width: String(CELL - 1), height: String(CELL - 1),
-              fill: pigment(gx, gy), "fill-opacity": "0.15",
+              fill: pigment(gx, gy), "fill-opacity": "1",
             });
             field.append(tile);
             fieldTiles.push({ rect: tile, gx: gx, gy: gy });
@@ -412,8 +412,8 @@
               if (!cell) continue;
               cell.setAttribute("x", String(sx + c * CELL));
               cell.setAttribute("y", String(sy + r * CELL));
-              cell.setAttribute("fill", pigment(Math.round((sx + c * CELL) / CELL), Math.round((sy + r * CELL) / CELL)));
-              cell.setAttribute("fill-opacity", String((1 - dist / (range + 0.25)) * 0.42));
+              cell.setAttribute("fill", "#ffffff");
+              cell.setAttribute("fill-opacity", String((1 - dist / (range + 0.25)) * 0.22));
             }
           }
           hLine.setAttribute("x1", "0"); hLine.setAttribute("y1", String(sy + 0.5));
@@ -547,14 +547,6 @@
         var u = (now % 4200) / 4200;
         ping.setAttribute("r", String(radius * 0.18 + u * radius * 2.1));
         ping.setAttribute("stroke-opacity", String((1 - u) * 0.38));
-        var cgx = hasPointer ? Math.round(sx / CELL) : -99;
-        var cgy = hasPointer ? Math.round(sy / CELL) : -99;
-        for (var ti = 0; ti < fieldTiles.length; ti++) {
-          var tile = fieldTiles[ti];
-          var td = Math.hypot(tile.gx - cgx, tile.gy - cgy);
-          var boost = hasPointer && td < 6 ? (1 - td / 6) * 0.22 : 0;
-          tile.rect.setAttribute("fill-opacity", String(0.15 + boost));
-        }
         raf = requestAnimationFrame(draw);
       }
       function kick() {
