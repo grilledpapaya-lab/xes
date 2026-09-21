@@ -135,7 +135,7 @@
       min-height: 44px; display: inline-flex; align-items: center;
       padding: 0 1rem;
       font-family: var(--font-mono); font-size: var(--text-label);
-      letter-spacing: var(--tracking-kicker); text-transform: lowercase;
+      letter-spacing: var(--tracking-kicker); text-transform: uppercase;
       color: color-mix(in oklab, var(--fg) 30%, transparent);
       text-decoration: none; text-underline-offset: 4px;
       text-decoration-color: color-mix(in oklab, var(--fg) 30%, transparent);
@@ -231,7 +231,7 @@
           <div class="scale-n"><span>0</span><span>4</span></div>
         </div>
       </div>
-      <a class="gate" href="./menu.html">enter</a>
+      <a class="gate" href="./menu.html">ENTER</a>
     </main>
 
     <footer>
@@ -310,9 +310,8 @@
       var azLine = el("line", { stroke: accent, "stroke-width": "1", "stroke-dasharray": "4 5", opacity: "0" });
       var azChord = el("line", { stroke: accent, "stroke-width": "1.15", opacity: "0" });
       var base = el("line", { stroke: fg, "stroke-opacity": "0.28", "stroke-width": "1", "stroke-dasharray": "5 6" });
-      var triA = el("line", { stroke: accent, "stroke-width": "1", opacity: "0" });
-      var triB = el("line", { stroke: accent, "stroke-width": "1", opacity: "0" });
-      var triFill = el("polygon", { fill: accent, "fill-opacity": "0", stroke: "none" });
+      var drop = el("line", { stroke: fg, "stroke-opacity": "0.28", "stroke-width": "1", "stroke-dasharray": "3 5", opacity: "0" });
+      var foot = el("rect", { width: "4", height: "4", fill: fg, "fill-opacity": "0.4", opacity: "0" });
       var staA = el("rect", { width: "6", height: "6", fill: fg, "fill-opacity": "0.45" });
       var staB = el("rect", { width: "6", height: "6", fill: fg, "fill-opacity": "0.45" });
       var labA = el("text", { fill: fg, "fill-opacity": "0.4", "font-family": "IBM Plex Mono, ui-monospace, monospace", "font-size": "10" });
@@ -337,7 +336,7 @@
       var ping = el("circle", { fill: "none", stroke: accent, "stroke-width": "1", opacity: "0" });
       var trailPts = [];
       instrument.append(ringOuter, ringMid, ringInner, ticks, cardinals, sweep, coreH, coreV, core, azText, rText, innerCraft);
-      [glow, cells, hLine, vLine, reticleH, reticleV, snapBox, links, nodeMarks, triFill, base, triA, triB, dimX, dimY, orbitPath, apsis, ping, trail, azLine, azChord, instrument, craft, staA, staB, labA, labB, traverse, stationMarks, stakeMarks].forEach(function (n) { svg.append(n); });
+      [glow, cells, hLine, vLine, reticleH, reticleV, snapBox, links, nodeMarks, base, drop, foot, dimX, dimY, orbitPath, apsis, ping, trail, azLine, azChord, instrument, craft, staA, staB, labA, labB, traverse, stationMarks, stakeMarks].forEach(function (n) { svg.append(n); });
 
       var cellPool = [], range = coarse ? 2 : 3;
       for (var col = -range; col <= range; col++) {
@@ -480,12 +479,12 @@
           hudY.textContent = String(Math.round(sy / CELL)).padStart(3, "0");
           hudAz.textContent = String(Math.round(deg)).padStart(3, "0") + "°";
           hudR.textContent = String(Math.round(distP));
-          triFill.setAttribute("points", ax + "," + ay + " " + bx + "," + by + " " + sx + "," + sy);
-          triFill.setAttribute("fill-opacity", "0.05");
-          triA.setAttribute("x1", String(ax)); triA.setAttribute("y1", String(ay));
-          triA.setAttribute("x2", String(sx)); triA.setAttribute("y2", String(sy)); triA.setAttribute("opacity", "0.45");
-          triB.setAttribute("x1", String(bx)); triB.setAttribute("y1", String(by));
-          triB.setAttribute("x2", String(sx)); triB.setAttribute("y2", String(sy)); triB.setAttribute("opacity", "0.45");
+          var abx = bx - ax, aby = by - ay, ab2 = abx * abx + aby * aby || 1;
+          var t = ((sx - ax) * abx + (sy - ay) * aby) / ab2;
+          var fx = ax + t * abx, fy = ay + t * aby;
+          drop.setAttribute("x1", String(sx)); drop.setAttribute("y1", String(sy));
+          drop.setAttribute("x2", String(fx)); drop.setAttribute("y2", String(fy)); drop.setAttribute("opacity", "1");
+          foot.setAttribute("x", String(fx - 2)); foot.setAttribute("y", String(fy - 2)); foot.setAttribute("opacity", "1");
           dimX.setAttribute("x1", String(cx)); dimX.setAttribute("y1", String(sy));
           dimX.setAttribute("x2", String(sx)); dimX.setAttribute("y2", String(sy)); dimX.setAttribute("opacity", "1");
           dimY.setAttribute("x1", String(sx)); dimY.setAttribute("y1", String(cy));
@@ -496,7 +495,7 @@
           reticleH.setAttribute("opacity", "0"); reticleV.setAttribute("opacity", "0");
           snapBox.setAttribute("opacity", "0");
           azLine.setAttribute("opacity", "0"); azChord.setAttribute("opacity", "0");
-          triA.setAttribute("opacity", "0"); triB.setAttribute("opacity", "0"); triFill.setAttribute("fill-opacity", "0");
+          drop.setAttribute("opacity", "0"); foot.setAttribute("opacity", "0");
           dimX.setAttribute("opacity", "0"); dimY.setAttribute("opacity", "0");
           sweep.setAttribute("opacity", coarse ? "0" : "1");
           azText.textContent = ""; azText.setAttribute("opacity", "0");
