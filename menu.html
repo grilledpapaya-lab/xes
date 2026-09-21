@@ -56,7 +56,7 @@
 
     .page {
       position: relative; z-index: 10;
-      height: 100lvh; min-height: 100lvh; display: flex; flex-direction: column; overflow: hidden;
+      height: 100dvh; min-height: 100dvh; display: flex; flex-direction: column; overflow: hidden;
     }
     header, footer { flex-shrink: 0; position: relative; z-index: 20; }
     .nav-row { display: flex; align-items: center; padding-block: 0.7rem; }
@@ -115,7 +115,7 @@
     .legal {
       position: relative;
       display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-      padding: 0.75rem 0 max(0.75rem, env(safe-area-inset-bottom));
+      padding: 1rem 0 max(2.25rem, calc(env(safe-area-inset-bottom) + 1.25rem));
       font-family: var(--font-mono); font-size: var(--text-label);
       letter-spacing: 0.04em;
     }
@@ -125,15 +125,23 @@
     @media (max-width: 639px) { .clock .meta { display: none; } }
     .mark {
       position: absolute; left: 50%; transform: translateX(-50%);
-      z-index: 20;
+      pointer-events: none;
       text-transform: uppercase; letter-spacing: var(--tracking-kicker);
       color: color-mix(in oklab, var(--fg) 70%, transparent);
-      text-decoration: none;
-      text-underline-offset: 4px;
-      text-decoration-color: color-mix(in oklab, var(--fg) 45%, transparent);
+    }
+    .gate {
+      position: absolute; left: 50%; bottom: 4rem; transform: translateX(-50%);
+      z-index: 20;
+      min-height: 44px; display: inline-flex; align-items: center;
+      padding: 0 1rem;
+      font-family: var(--font-mono); font-size: var(--text-label);
+      letter-spacing: var(--tracking-kicker); text-transform: lowercase;
+      color: color-mix(in oklab, var(--fg) 30%, transparent);
+      text-decoration: none; text-underline-offset: 4px;
+      text-decoration-color: color-mix(in oklab, var(--fg) 30%, transparent);
       transition: color 200ms ease-out;
     }
-    .mark:hover { color: var(--fg); text-decoration: underline; }
+    .gate:hover { color: color-mix(in oklab, var(--fg) 70%, transparent); text-decoration: underline; }
     .credit { text-transform: uppercase; letter-spacing: var(--tracking-kicker); color: var(--muted); }
 
     .sheet {
@@ -242,6 +250,7 @@
           </ul>
         </div>
       </nav>
+      <a class="gate" href="./index.html">field</a>
     </main>
 
     <footer>
@@ -250,7 +259,7 @@
           <span id="clock-time">00:00:00</span>
           <span class="meta" id="clock-zone">SYS</span>
         </p>
-        <a class="mark" href="./index.html">PROJECT 19</a>
+        <p class="mark">PROJECT 19</p>
         <p class="credit">xeshourya</p>
       </div>
     </footer>
