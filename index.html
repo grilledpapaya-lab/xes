@@ -24,6 +24,7 @@
       --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
       --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
       --text-label: 0.6875rem;
+      --text-kicker: 0.75rem;
       --tracking-kicker: 0.16em;
     }
     * { box-sizing: border-box; }
@@ -124,11 +125,54 @@
     @media (max-width: 639px) { .clock .meta { display: none; } }
     .mark {
       position: absolute; left: 50%; transform: translateX(-50%);
-      pointer-events: none;
+      z-index: 20;
       text-transform: uppercase; letter-spacing: var(--tracking-kicker);
       color: color-mix(in oklab, var(--fg) 70%, transparent);
+      text-decoration: none;
+      text-underline-offset: 4px;
+      text-decoration-color: color-mix(in oklab, var(--fg) 45%, transparent);
+      transition: color 200ms ease-out;
     }
+    .mark:hover { color: var(--fg); text-decoration: underline; }
     .credit { text-transform: uppercase; letter-spacing: var(--tracking-kicker); color: var(--muted); }
+
+    .sheet {
+      position: absolute; inset: 0; z-index: 10;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 2rem;
+    }
+    .sheet-inner { width: min(28rem, 100%); }
+    .sheet-kicker {
+      display: flex; justify-content: space-between; margin: 0 0 2rem;
+      font-family: var(--font-mono); font-size: var(--text-label);
+      letter-spacing: var(--tracking-kicker); text-transform: uppercase; color: var(--muted);
+    }
+    .toc { list-style: none; margin: 0; padding: 0; }
+    .toc a {
+      display: flex; min-height: 44px; align-items: baseline; justify-content: space-between;
+      gap: 1.5rem; padding: 1rem 0;
+      border-bottom: 1px solid color-mix(in oklab, var(--fg) 10%, transparent);
+      font-family: var(--font-mono); font-size: var(--text-kicker);
+      letter-spacing: var(--tracking-kicker); text-transform: uppercase;
+      color: color-mix(in oklab, var(--fg) 80%, transparent);
+      transition: color 200ms ease-out;
+    }
+    .toc a:hover { color: var(--fg); }
+    .toc .id { font-size: var(--text-label); color: var(--muted); margin-right: 1.25rem; }
+    .toc .name { text-underline-offset: 4px; text-decoration-color: color-mix(in oklab, var(--fg) 45%, transparent); }
+    .toc a:hover .name { text-decoration: underline; }
+    .toc .open { font-size: var(--text-label); letter-spacing: var(--tracking-kicker); color: var(--muted); opacity: 0; transition: opacity 200ms ease-out; }
+    .toc a:hover .open { opacity: 1; }
+    .row {
+      display: flex; min-height: 44px; align-items: baseline; justify-content: space-between;
+      gap: 1.5rem; padding: 1rem 0; margin: 0;
+      border-bottom: 1px solid color-mix(in oklab, var(--fg) 10%, transparent);
+      font-family: var(--font-mono); font-size: var(--text-kicker);
+      letter-spacing: var(--tracking-kicker); text-transform: uppercase;
+    }
+    .row.dash { border-bottom-style: dashed; color: var(--muted); }
+    .row dt { font-size: var(--text-label); color: var(--muted); }
+    .row dd { margin: 0; color: color-mix(in oklab, var(--fg) 80%, transparent); }
 
     #grid { position: fixed; inset: 0; z-index: 2; width: 100%; height: 100%; min-height: 100lvh; pointer-events: none; }
     .hud {
@@ -187,7 +231,7 @@
           <span id="clock-time">00:00:00</span>
           <span class="meta" id="clock-zone">SYS</span>
         </p>
-        <p class="mark">PROJECT 19</p>
+        <a class="mark" href="./menu.html">PROJECT 19</a>
         <p class="credit">xeshourya</p>
       </div>
     </footer>
