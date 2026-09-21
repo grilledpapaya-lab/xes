@@ -102,6 +102,11 @@
       background: color-mix(in oklab, var(--fg) 40%, transparent);
     }
     .scale-bar i:nth-child(even) { height: 4px; }
+    .scale-index {
+      position: absolute; top: 0; left: 50%; width: 1px; height: 8px;
+      transform: translateX(-0.5px);
+      background: var(--accent);
+    }
     .scale-n {
       display: flex; width: 128px; justify-content: space-between;
       font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.16em;
@@ -227,6 +232,7 @@
         <div class="scale">
           <div class="scale-bar">
             <i style="left:0"></i><i style="left:25%"></i><i style="left:50%"></i><i style="left:75%"></i><i style="left:100%"></i>
+            <span class="scale-index" data-scale-index></span>
           </div>
           <div class="scale-n"><span>0</span><span>4</span></div>
         </div>
@@ -290,7 +296,7 @@
       }
       function snap(n, origin) { return origin + Math.round((n - origin) / CELL) * CELL; }
       var fg = "#161615", accent = "#2c4a6b";
-      var width = 0, height = 0, cx = 0, cy = 0, radius = 120, ax = 0, ay = 0, bx = 0, by = 0;
+      var width = 0, height = 0, cx = 0, cy = 0, radius = 120, ax = 0, ay = 0, bx = 0, by = 0, plateLeft = 0, plateWidth = 1, scaleU = 0.5;
       var mx = -1, my = -1, hasPointer = false, raf = 0, running = false, stakes = [], stations = [];
 
       var glow = el("rect", { fill: "url(#grid-spot)", opacity: "0" });
@@ -369,6 +375,8 @@
         var box = field ? field.getBoundingClientRect() : null;
         cx = box ? box.left + box.width / 2 : width / 2;
         cy = box ? box.top + box.height / 2 : height / 2;
+        plateLeft = box ? box.left : 0;
+        plateWidth = box ? box.width : width;
         var origin = cx + "px " + cy + "px";
         document.documentElement.style.backgroundPosition = origin + ", " + origin + ", " + origin + ", " + origin;
         var span = box ? Math.min(box.width, box.height) : Math.min(width, height);
@@ -581,6 +589,11 @@
         var u = (now % 4200) / 4200;
         ping.setAttribute("r", String(radius * 0.18 + u * radius * 2.1));
         ping.setAttribute("stroke-opacity", String((1 - u) * 0.38));
+        var targetU = hasPointer ? Math.max(0, Math.min(1, (sx - plateLeft) / plateWidth)) : 0.5;
+        scaleU += (targetU - scaleU) * 0.14;
+        var idx = document.querySelector("[data-scale-index]");
+        if (idx) idx.style.left = (scaleU * 100) + "%";
+        core.setAttribute("fill-opacity", hasPointer ? "0.85" : String(0.5 + Math.sin(now / 900) * 0.28));
         raf = requestAnimationFrame(draw);
       }
       function kick() {
