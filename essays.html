@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>PROJECT 19 — Essays</title>
+  <meta name="description" content="PROJECT 19" />
+  <meta name="theme-color" content="#F5F4F0" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600&display=swap" />
+  <style>
+    :root {
+      --bg: #f5f4f0;
+      --fg: #161615;
+      --muted: #6e6c66;
+      --subtle: #9a9890;
+      --border: #dcd9cf;
+      --accent: #2c4a6b;
+      --grid-fine: color-mix(in oklab, var(--fg) 7%, transparent);
+      --grid-major: color-mix(in oklab, var(--fg) 13%, transparent);
+      --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+      --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      --text-label: 0.6875rem;
+      --text-kicker: 0.75rem;
+      --tracking-kicker: 0.16em;
+    }
+    * { box-sizing: border-box; }
+    html {
+      -webkit-font-smoothing: antialiased;
+      background: var(--bg);
+      color: var(--fg);
+      overflow: hidden;
+      min-height: 100%;
+      min-height: 100lvh;
+      background-image:
+        linear-gradient(to right, var(--grid-major) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-major) 1px, transparent 1px),
+        linear-gradient(to right, var(--grid-fine) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-fine) 1px, transparent 1px);
+      background-size: 128px 128px, 128px 128px, 32px 32px, 32px 32px;
+      background-position: center center;
+    }
+    body {
+      margin: 0;
+      min-height: 100%;
+      min-height: 100lvh;
+      font-family: var(--font-sans);
+      background: transparent;
+    }
+    a { color: inherit; text-decoration: none; }
+    .wrap { width: min(72rem, calc(100% - 2.5rem)); margin-inline: auto; }
+    @media (min-width: 640px) { .wrap { width: min(72rem, calc(100% - 4rem)); } }
+
+    .page {
+      position: relative; z-index: 10;
+      height: 100lvh; min-height: 100lvh; display: flex; flex-direction: column; overflow: hidden;
+    }
+    header, footer { flex-shrink: 0; position: relative; z-index: 20; }
+    .nav-row { display: flex; align-items: center; padding-block: 0.7rem; }
+    .brand {
+      display: flex; align-items: center; min-height: 40px; color: color-mix(in oklab, var(--fg) 28%, transparent);
+      transition: color 200ms ease-out;
+    }
+    .brand:hover { color: color-mix(in oklab, var(--fg) 50%, transparent); }
+    .spacer { position: relative; flex: 1; min-height: 0; }
+    .plate {
+      pointer-events: none; position: absolute; top: 0; right: 0.75rem; bottom: 0.75rem; left: 0.75rem;
+    }
+    @media (min-width: 640px) { .plate { right: 1.25rem; bottom: 1.25rem; left: 1.25rem; } }
+    .plate-frame {
+      position: absolute; inset: 0;
+      border: 1px solid color-mix(in oklab, var(--fg) 12%, transparent);
+    }
+    .crop {
+      position: absolute; width: 12px; height: 12px;
+      border-color: color-mix(in oklab, var(--fg) 35%, transparent);
+    }
+    .crop.tl { top: -1px; left: -1px; border-top: 1px solid; border-left: 1px solid; }
+    .crop.tr { top: -1px; right: -1px; border-top: 1px solid; border-right: 1px solid; }
+    .crop.bl { bottom: -1px; left: -1px; border-bottom: 1px solid; border-left: 1px solid; }
+    .crop.br { bottom: -1px; right: -1px; border-bottom: 1px solid; border-right: 1px solid; }
+    .mid {
+      position: absolute; background: color-mix(in oklab, var(--fg) 25%, transparent);
+    }
+    .mid.t { top: 0; left: 50%; width: 1px; height: 8px; transform: translateX(-0.5px); }
+    .mid.b { bottom: 0; left: 50%; width: 1px; height: 8px; transform: translateX(-0.5px); }
+    .mid.l { top: 50%; left: 0; width: 8px; height: 1px; transform: translateY(-0.5px); }
+    .mid.r { top: 50%; right: 0; width: 8px; height: 1px; transform: translateY(-0.5px); }
+    .scale {
+      position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+    }
+    .scale-bar {
+      position: relative; width: 128px; height: 1px;
+      background: color-mix(in oklab, var(--fg) 30%, transparent);
+    }
+    .scale-bar i {
+      position: absolute; top: 0; width: 1px; height: 6px;
+      background: color-mix(in oklab, var(--fg) 40%, transparent);
+    }
+    .scale-bar i:nth-child(even) { height: 4px; }
+    .scale-n {
+      display: flex; width: 128px; justify-content: space-between;
+      font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.16em;
+      color: color-mix(in oklab, var(--fg) 35%, transparent);
+    }
+
+    footer {
+      border-top: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+      background: color-mix(in oklab, var(--bg) 55%, transparent);
+    }
+    .legal {
+      position: relative;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      padding: 0.75rem 0 max(0.75rem, env(safe-area-inset-bottom));
+      font-family: var(--font-mono); font-size: var(--text-label);
+      letter-spacing: 0.04em;
+    }
+    .legal p { margin: 0; }
+    .clock { font-variant-numeric: tabular-nums; color: var(--muted); }
+    .clock .meta { margin-left: 0.75rem; color: var(--muted); }
+    @media (max-width: 639px) { .clock .meta { display: none; } }
+    .mark {
+      position: absolute; left: 50%; transform: translateX(-50%);
+      z-index: 20;
+      text-transform: uppercase; letter-spacing: var(--tracking-kicker);
+      color: color-mix(in oklab, var(--fg) 70%, transparent);
+      text-decoration: none;
+      text-underline-offset: 4px;
+      text-decoration-color: color-mix(in oklab, var(--fg) 45%, transparent);
+      transition: color 200ms ease-out;
+    }
+    .mark:hover { color: var(--fg); text-decoration: underline; }
+    .credit { text-transform: uppercase; letter-spacing: var(--tracking-kicker); color: var(--muted); }
+
+    .sheet {
+      position: absolute; inset: 0; z-index: 10;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 2rem;
+    }
+    .sheet-inner { width: min(28rem, 100%); }
+    .sheet-kicker {
+      display: flex; justify-content: space-between; margin: 0 0 2rem;
+      font-family: var(--font-mono); font-size: var(--text-label);
+      letter-spacing: var(--tracking-kicker); text-transform: uppercase; color: var(--muted);
+    }
+    .toc { list-style: none; margin: 0; padding: 0; }
+    .toc a {
+      display: flex; min-height: 44px; align-items: baseline; justify-content: space-between;
+      gap: 1.5rem; padding: 1rem 0;
+      border-bottom: 1px solid color-mix(in oklab, var(--fg) 10%, transparent);
+      font-family: var(--font-mono); font-size: var(--text-kicker);
+      letter-spacing: var(--tracking-kicker); text-transform: uppercase;
+      color: color-mix(in oklab, var(--fg) 80%, transparent);
+      transition: color 200ms ease-out;
+    }
+    .toc a:hover { color: var(--fg); }
+    .toc .id { font-size: var(--text-label); color: var(--muted); margin-right: 1.25rem; }
+    .toc .name { text-underline-offset: 4px; text-decoration-color: color-mix(in oklab, var(--fg) 45%, transparent); }
+    .toc a:hover .name { text-decoration: underline; }
+    .toc .open { font-size: var(--text-label); letter-spacing: var(--tracking-kicker); color: var(--muted); opacity: 0; transition: opacity 200ms ease-out; }
+    .toc a:hover .open { opacity: 1; }
+    .row {
+      display: flex; min-height: 44px; align-items: baseline; justify-content: space-between;
+      gap: 1.5rem; padding: 1rem 0; margin: 0;
+      border-bottom: 1px solid color-mix(in oklab, var(--fg) 10%, transparent);
+      font-family: var(--font-mono); font-size: var(--text-kicker);
+      letter-spacing: var(--tracking-kicker); text-transform: uppercase;
+    }
+    .row.dash { border-bottom-style: dashed; color: var(--muted); }
+    .row dt { font-size: var(--text-label); color: var(--muted); }
+    .row dd { margin: 0; color: color-mix(in oklab, var(--fg) 80%, transparent); }
+
+    #grid { position: fixed; inset: 0; z-index: 2; width: 100%; height: 100%; min-height: 100lvh; pointer-events: none; }
+    .hud {
+      display: none; position: fixed; top: 1.25rem; right: 1.25rem; z-index: 20;
+      pointer-events: none; font-family: var(--font-mono); font-size: var(--text-label);
+      line-height: 1.6; letter-spacing: 0.04em; color: var(--muted);
+    }
+    @media (min-width: 640px) { .hud { display: block; } }
+    .hud .num { font-variant-numeric: tabular-nums; color: var(--fg); }
+    .instrument-sweep { transform-origin: 0px 0px; animation: instrument-spin 72s linear infinite; }
+    @keyframes instrument-spin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) {
+      .instrument-sweep { animation: none; }
+      html { background-attachment: scroll; }
+    }
+  </style>
+</head>
+<body>
+  <svg id="grid" aria-hidden="true">
+    <defs>
+      <radialGradient id="grid-spot" gradientUnits="userSpaceOnUse" r="220">
+        <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.10" />
+        <stop offset="45%" stop-color="var(--accent)" stop-opacity="0.04" />
+        <stop offset="100%" stop-color="var(--accent)" stop-opacity="0" />
+      </radialGradient>
+    </defs>
+  </svg>
+  <div class="hud" aria-hidden="true">
+    <div>COL <span id="hud-x" class="num">—</span></div>
+    <div>ROW <span id="hud-y" class="num">—</span></div>
+    <div>AZ <span id="hud-az" class="num">—</span></div>
+    <div>R <span id="hud-r" class="num">—</span></div>
+    <div>SNAP ON</div>
+  </div>
+
+  <div id="top" class="page">
+    <main class="spacer">
+      <div class="plate" aria-hidden="true">
+        <div class="plate-frame"></div>
+        <span class="crop tl"></span><span class="crop tr"></span>
+        <span class="crop bl"></span><span class="crop br"></span>
+        <span class="mid t"></span><span class="mid b"></span>
+        <span class="mid l"></span><span class="mid r"></span>
+        <div class="scale">
+          <div class="scale-bar">
+            <i style="left:0"></i><i style="left:25%"></i><i style="left:50%"></i><i style="left:75%"></i><i style="left:100%"></i>
+          </div>
+          <div class="scale-n"><span>0</span><span>4</span></div>
+        </div>
+      </div>
+      <div class="sheet">
+        <div class="sheet-inner">
+          <p class="sheet-kicker"><span>Sheet 01</span><span>Essays</span></p>
+          <p class="row dash"><span>—</span><span>No entries filed</span></p>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="wrap legal">
+        <p class="clock">
+          <span id="clock-time">00:00:00</span>
+          <span class="meta" id="clock-zone">SYS</span>
+        </p>
+        <a class="mark" href="./menu.html">PROJECT 19</a>
+        <p class="credit">xeshourya</p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    function tickClock() {
+      var parts = new Intl.DateTimeFormat(undefined, {
+        hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false, timeZoneName: "short",
+      }).formatToParts(new Date());
+      var get = function (type) {
+        var p = parts.find(function (x) { return x.type === type; });
+        return p ? p.value : "";
+      };
+      document.getElementById("clock-time").textContent = get("hour") + ":" + get("minute") + ":" + get("second");
+      document.getElementById("clock-zone").textContent = get("timeZoneName");
+    }
+    tickClock();
+    setInterval(tickClock, 1000);
+
+    (function () {
+      var CELL = 32, LINK_RADIUS = 240, STAKE_MS = 1400;
+      var NODES = [
+        { id: "origin", x: 0.18, y: 0.28, label: "ORIGIN" },
+        { id: "north", x: 0.82, y: 0.24, label: "NORTH" },
+        { id: "east", x: 0.84, y: 0.68, label: "EAST" },
+        { id: "datum", x: 0.16, y: 0.72, label: "DATUM" },
+      ];
+      var svg = document.getElementById("grid");
+      var hudX = document.getElementById("hud-x");
+      var hudY = document.getElementById("hud-y");
+      var hudAz = document.getElementById("hud-az");
+      var hudR = document.getElementById("hud-r");
+      if (!svg || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      var coarse = window.matchMedia("(pointer: coarse)").matches;
+      var NS = "http://www.w3.org/2000/svg";
+      function el(name, attrs) {
+        var n = document.createElementNS(NS, name);
+        Object.keys(attrs).forEach(function (k) { n.setAttribute(k, attrs[k]); });
+        return n;
+      }
+      function snap(n, origin) { return origin + Math.round((n - origin) / CELL) * CELL; }
+      var fg = "#161615", accent = "#2c4a6b";
+      var width = 0, height = 0, cx = 0, cy = 0, radius = 120, ax = 0, ay = 0, bx = 0, by = 0;
+      var mx = -1, my = -1, hasPointer = false, raf = 0, running = false, stakes = [], stations = [];
+
+      var glow = el("rect", { fill: "url(#grid-spot)", opacity: "0" });
+      var cells = el("g", {});
+      var hLine = el("line", { stroke: fg, "stroke-opacity": "0.16", "stroke-width": "1", opacity: "0" });
+      var vLine = el("line", { stroke: fg, "stroke-opacity": "0.16", "stroke-width": "1", opacity: "0" });
+      var reticleH = el("line", { stroke: accent, "stroke-width": "1", opacity: "0" });
+      var reticleV = el("line", { stroke: accent, "stroke-width": "1", opacity: "0" });
+      var snapBox = el("rect", { fill: "none", stroke: accent, "stroke-opacity": "0.55", "stroke-width": "1", opacity: "0" });
+      var links = el("g", {});
+      var nodeMarks = el("g", {});
+      var stakeMarks = el("g", {});
+      var instrument = el("g", {});
+      var ringOuter = el("circle", { fill: "none", stroke: fg, "stroke-opacity": "0.22", "stroke-width": "1" });
+      var ringMid = el("circle", { fill: "none", stroke: fg, "stroke-opacity": "0.12", "stroke-width": "1" });
+      var ringInner = el("circle", { fill: "none", stroke: accent, "stroke-opacity": "0.28", "stroke-width": "1" });
+      var ticks = el("g", {});
+      var cardinals = el("g", {});
+      var sweep = el("g", { class: "instrument-sweep" });
+      var sweepLine = el("line", { x1: "0", y1: "0", stroke: accent, "stroke-opacity": "0.35", "stroke-width": "1" });
+      var sweepTip = el("circle", { r: "2.5", fill: accent, "fill-opacity": "0.7" });
+      sweep.append(sweepLine, sweepTip);
+      var azLine = el("line", { stroke: accent, "stroke-width": "1", "stroke-dasharray": "4 5", opacity: "0" });
+      var azChord = el("line", { stroke: accent, "stroke-width": "1.15", opacity: "0" });
+      var base = el("line", { stroke: fg, "stroke-opacity": "0.28", "stroke-width": "1", "stroke-dasharray": "5 6" });
+      var triA = el("line", { stroke: accent, "stroke-width": "1", opacity: "0" });
+      var triB = el("line", { stroke: accent, "stroke-width": "1", opacity: "0" });
+      var triFill = el("polygon", { fill: accent, "fill-opacity": "0", stroke: "none" });
+      var staA = el("rect", { width: "6", height: "6", fill: fg, "fill-opacity": "0.45" });
+      var staB = el("rect", { width: "6", height: "6", fill: fg, "fill-opacity": "0.45" });
+      var labA = el("text", { fill: fg, "fill-opacity": "0.4", "font-family": "IBM Plex Mono, ui-monospace, monospace", "font-size": "10" });
+      labA.textContent = "A";
+      var labB = el("text", { fill: fg, "fill-opacity": "0.4", "font-family": "IBM Plex Mono, ui-monospace, monospace", "font-size": "10" });
+      labB.textContent = "B";
+      var dimX = el("line", { stroke: fg, "stroke-opacity": "0.22", "stroke-dasharray": "2 4", opacity: "0" });
+      var dimY = el("line", { stroke: fg, "stroke-opacity": "0.22", "stroke-dasharray": "2 4", opacity: "0" });
+      var traverse = el("polyline", { fill: "none", stroke: accent, "stroke-opacity": "0.35", "stroke-width": "1" });
+      var stationMarks = el("g", {});
+      var coreH = el("line", { stroke: fg, "stroke-opacity": "0.35", "stroke-width": "1" });
+      var coreV = el("line", { stroke: fg, "stroke-opacity": "0.35", "stroke-width": "1" });
+      var core = el("rect", { width: "5", height: "5", fill: accent, "fill-opacity": "0.85" });
+      var azText = el("text", { fill: accent, "font-family": "IBM Plex Mono, ui-monospace, monospace", "font-size": "10", "font-weight": "500", "text-anchor": "middle", opacity: "0" });
+      var rText = el("text", { fill: fg, "font-family": "IBM Plex Mono, ui-monospace, monospace", "font-size": "10", "text-anchor": "middle", opacity: "0.35" });
+      rText.textContent = "";
+      var orbitPath = el("ellipse", { fill: "none", stroke: accent, "stroke-opacity": "0.28", "stroke-width": "1" });
+      var apsis = el("line", { stroke: fg, "stroke-opacity": "0.16", "stroke-width": "1", "stroke-dasharray": "4 6" });
+      var trail = el("polyline", { fill: "none", stroke: accent, "stroke-opacity": "0.32", "stroke-width": "1" });
+      var craft = el("rect", { width: "5", height: "5", fill: accent, "fill-opacity": "0.95" });
+      var innerCraft = el("circle", { r: "2.2", fill: fg, "fill-opacity": "0.55" });
+      var ping = el("circle", { fill: "none", stroke: accent, "stroke-width": "1", opacity: "0" });
+      var trailPts = [];
+      instrument.append(ringOuter, ringMid, ringInner, ticks, cardinals, sweep, coreH, coreV, core, azText, rText, innerCraft);
+      [glow, cells, hLine, vLine, reticleH, reticleV, snapBox, links, nodeMarks, triFill, base, triA, triB, dimX, dimY, orbitPath, apsis, ping, trail, azLine, azChord, instrument, craft, staA, staB, labA, labB, traverse, stationMarks, stakeMarks].forEach(function (n) { svg.append(n); });
+
+      var cellPool = [], range = coarse ? 2 : 3;
+      for (var col = -range; col <= range; col++) {
+        for (var row = -range; row <= range; row++) {
+          if (Math.hypot(col, row) > range) continue;
+          var rect = el("rect", { width: String(CELL), height: String(CELL), fill: accent, "fill-opacity": "0" });
+          cells.append(rect);
+          cellPool.push(rect);
+        }
+      }
+      var nodePool = NODES.map(function (node) {
+        var mark = el("rect", { width: "5", height: "5", fill: fg, "fill-opacity": "0.28" });
+        var label = el("text", { fill: accent, "font-family": "IBM Plex Mono, ui-monospace, monospace", "font-size": "10", "font-weight": "500", opacity: "0" });
+        label.textContent = node.label;
+        var link = el("line", { stroke: accent, "stroke-width": "1", "stroke-dasharray": "3 5", opacity: "0" });
+        nodeMarks.append(mark, label);
+        links.append(link);
+        return { node: node, mark: mark, label: label, link: link };
+      });
+      var spot = svg.querySelector("#grid-spot");
+
+      function layoutInstrument() {
+        var field = document.querySelector("main");
+        var box = field ? field.getBoundingClientRect() : null;
+        cx = box ? box.left + box.width / 2 : width / 2;
+        cy = box ? box.top + box.height / 2 : height / 2;
+        var origin = cx + "px " + cy + "px";
+        document.documentElement.style.backgroundPosition = origin + ", " + origin + ", " + origin + ", " + origin;
+        var span = box ? Math.min(box.width, box.height) : Math.min(width, height);
+        radius = Math.max(84, Math.min(148, span * 0.28));
+        instrument.setAttribute("transform", "translate(" + cx + " " + cy + ")");
+        ringOuter.setAttribute("r", String(radius));
+        ringMid.setAttribute("r", String(radius * 0.62));
+        ringInner.setAttribute("r", String(radius * 0.22));
+        sweepLine.setAttribute("y2", String(-radius));
+        sweepTip.setAttribute("cy", String(-radius));
+        coreH.setAttribute("x1", "-10"); coreH.setAttribute("x2", "10"); coreH.setAttribute("y1", "0"); coreH.setAttribute("y2", "0");
+        coreV.setAttribute("y1", "-10"); coreV.setAttribute("y2", "10"); coreV.setAttribute("x1", "0"); coreV.setAttribute("x2", "0");
+        core.setAttribute("x", "-2.5"); core.setAttribute("y", "-2.5");
+        azText.setAttribute("y", "4");
+        rText.setAttribute("y", String(radius * 0.22 + 16));
+        while (ticks.firstChild) ticks.removeChild(ticks.firstChild);
+        for (var i = 0; i < 72; i++) {
+          var rad = (i * 5 * Math.PI) / 180;
+          var major = i % 18 === 0, mid = i % 6 === 0;
+          var inner = radius - (major ? 10 : mid ? 6 : 3.5);
+          ticks.append(el("line", {
+            x1: String(Math.sin(rad) * inner), y1: String(-Math.cos(rad) * inner),
+            x2: String(Math.sin(rad) * radius), y2: String(-Math.cos(rad) * radius),
+            stroke: fg, "stroke-opacity": major ? "0.45" : mid ? "0.22" : "0.12", "stroke-width": "1",
+          }));
+        }
+        while (cardinals.firstChild) cardinals.removeChild(cardinals.firstChild);
+        [["N", 0, -1], ["E", 1, 0], ["S", 0, 1], ["W", -1, 0]].forEach(function (d) {
+          var t = el("text", {
+            x: String(d[1] * (radius + 14)), y: String(d[2] * (radius + 14) + 3),
+            fill: fg, "fill-opacity": "0.4",
+            "font-family": "IBM Plex Mono, ui-monospace, monospace", "font-size": "10",
+            "letter-spacing": "0.12em", "text-anchor": "middle",
+          });
+          t.textContent = d[0];
+          cardinals.append(t);
+        });
+        var field = document.querySelector("main");
+        var box = field ? field.getBoundingClientRect() : null;
+        ax = snap(box ? box.left + box.width * 0.18 : width * 0.18, cx);
+        ay = snap(box ? box.top + box.height * 0.82 : height * 0.82, cy);
+        bx = snap(box ? box.left + box.width * 0.82 : width * 0.82, cx);
+        by = ay;
+        base.setAttribute("x1", String(ax)); base.setAttribute("y1", String(ay));
+        base.setAttribute("x2", String(bx)); base.setAttribute("y2", String(by));
+        staA.setAttribute("x", String(ax - 3)); staA.setAttribute("y", String(ay - 3));
+        staB.setAttribute("x", String(bx - 3)); staB.setAttribute("y", String(by - 3));
+        labA.setAttribute("x", String(ax - 10)); labA.setAttribute("y", String(ay + 16));
+        labB.setAttribute("x", String(bx + 6)); labB.setAttribute("y", String(by + 16));
+        var oa = radius * 1.72, ob = radius * 0.58;
+        orbitPath.setAttribute("cx", String(cx)); orbitPath.setAttribute("cy", String(cy));
+        orbitPath.setAttribute("rx", String(oa)); orbitPath.setAttribute("ry", String(ob));
+        apsis.setAttribute("x1", String(cx - oa)); apsis.setAttribute("y1", String(cy));
+        apsis.setAttribute("x2", String(cx + oa)); apsis.setAttribute("y2", String(cy));
+        ping.setAttribute("cx", String(cx)); ping.setAttribute("cy", String(cy));
+      }
+
+      function draw(now) {
+        var sx = hasPointer ? snap(mx, cx) : -1;
+        var sy = hasPointer ? snap(my, cy) : -1;
+        glow.setAttribute("width", String(width));
+        glow.setAttribute("height", String(height));
+        glow.setAttribute("opacity", hasPointer ? "1" : "0");
+        if (spot) {
+          spot.setAttribute("cx", String(mx));
+          spot.setAttribute("cy", String(my));
+          spot.setAttribute("fx", String(mx));
+          spot.setAttribute("fy", String(my));
+        }
+        if (hasPointer) {
+          var i = 0;
+          for (var c = -range; c <= range; c++) {
+            for (var r = -range; r <= range; r++) {
+              var dist = Math.hypot(c, r);
+              if (dist > range) continue;
+              var cell = cellPool[i++];
+              if (!cell) continue;
+              cell.setAttribute("x", String(sx + c * CELL));
+              cell.setAttribute("y", String(sy + r * CELL));
+              cell.setAttribute("fill-opacity", String((1 - dist / (range + 0.25)) * 0.1));
+            }
+          }
+          hLine.setAttribute("x1", "0"); hLine.setAttribute("y1", String(sy + 0.5));
+          hLine.setAttribute("x2", String(width)); hLine.setAttribute("y2", String(sy + 0.5));
+          vLine.setAttribute("x1", String(sx + 0.5)); vLine.setAttribute("y1", "0");
+          vLine.setAttribute("x2", String(sx + 0.5)); vLine.setAttribute("y2", String(height));
+          reticleH.setAttribute("x1", String(sx - 14)); reticleH.setAttribute("y1", String(sy + 0.5));
+          reticleH.setAttribute("x2", String(sx + 14)); reticleH.setAttribute("y2", String(sy + 0.5));
+          reticleV.setAttribute("x1", String(sx + 0.5)); reticleV.setAttribute("y1", String(sy - 14));
+          reticleV.setAttribute("x2", String(sx + 0.5)); reticleV.setAttribute("y2", String(sy + 14));
+          snapBox.setAttribute("x", String(sx - CELL / 2 + 0.5));
+          snapBox.setAttribute("y", String(sy - CELL / 2 + 0.5));
+          snapBox.setAttribute("width", String(CELL - 1));
+          snapBox.setAttribute("height", String(CELL - 1));
+          hLine.setAttribute("opacity", "1"); vLine.setAttribute("opacity", "1");
+          reticleH.setAttribute("opacity", "0.85"); reticleV.setAttribute("opacity", "0.85");
+          snapBox.setAttribute("opacity", "1");
+          var dx = mx - cx, dy = my - cy, distP = Math.hypot(dx, dy);
+          var ang = Math.atan2(dx, -dy);
+          var deg = ((ang * 180) / Math.PI + 360) % 360;
+          var ux = Math.sin(ang), uy = -Math.cos(ang);
+          azChord.setAttribute("x1", String(cx)); azChord.setAttribute("y1", String(cy));
+          azChord.setAttribute("x2", String(cx + ux * radius)); azChord.setAttribute("y2", String(cy + uy * radius));
+          azChord.setAttribute("opacity", "0.85");
+          azLine.setAttribute("x1", String(cx + ux * radius)); azLine.setAttribute("y1", String(cy + uy * radius));
+          azLine.setAttribute("x2", String(sx)); azLine.setAttribute("y2", String(sy));
+          azLine.setAttribute("opacity", distP > radius ? "0.45" : "0");
+          sweep.setAttribute("opacity", "0");
+          azText.textContent = deg.toFixed(1) + "°";
+          azText.setAttribute("opacity", "0.9");
+          rText.textContent = "R " + String(Math.round(distP)).padStart(4, "0");
+          rText.setAttribute("opacity", "0.45");
+          hudX.textContent = String(Math.round(sx / CELL)).padStart(3, "0");
+          hudY.textContent = String(Math.round(sy / CELL)).padStart(3, "0");
+          hudAz.textContent = String(Math.round(deg)).padStart(3, "0") + "°";
+          hudR.textContent = String(Math.round(distP));
+          triFill.setAttribute("points", ax + "," + ay + " " + bx + "," + by + " " + sx + "," + sy);
+          triFill.setAttribute("fill-opacity", "0.05");
+          triA.setAttribute("x1", String(ax)); triA.setAttribute("y1", String(ay));
+          triA.setAttribute("x2", String(sx)); triA.setAttribute("y2", String(sy)); triA.setAttribute("opacity", "0.45");
+          triB.setAttribute("x1", String(bx)); triB.setAttribute("y1", String(by));
+          triB.setAttribute("x2", String(sx)); triB.setAttribute("y2", String(sy)); triB.setAttribute("opacity", "0.45");
+          dimX.setAttribute("x1", String(cx)); dimX.setAttribute("y1", String(sy));
+          dimX.setAttribute("x2", String(sx)); dimX.setAttribute("y2", String(sy)); dimX.setAttribute("opacity", "1");
+          dimY.setAttribute("x1", String(sx)); dimY.setAttribute("y1", String(cy));
+          dimY.setAttribute("x2", String(sx)); dimY.setAttribute("y2", String(sy)); dimY.setAttribute("opacity", "1");
+        } else {
+          cellPool.forEach(function (cell) { cell.setAttribute("fill-opacity", "0"); });
+          hLine.setAttribute("opacity", "0"); vLine.setAttribute("opacity", "0");
+          reticleH.setAttribute("opacity", "0"); reticleV.setAttribute("opacity", "0");
+          snapBox.setAttribute("opacity", "0");
+          azLine.setAttribute("opacity", "0"); azChord.setAttribute("opacity", "0");
+          triA.setAttribute("opacity", "0"); triB.setAttribute("opacity", "0"); triFill.setAttribute("fill-opacity", "0");
+          dimX.setAttribute("opacity", "0"); dimY.setAttribute("opacity", "0");
+          sweep.setAttribute("opacity", coarse ? "0" : "1");
+          azText.textContent = ""; azText.setAttribute("opacity", "0");
+          rText.textContent = ""; rText.setAttribute("opacity", "0");
+          hudX.textContent = "—"; hudY.textContent = "—"; hudAz.textContent = "—"; hudR.textContent = "—";
+        }
+        nodePool.forEach(function (item) {
+          var nx = snap(item.node.x * width, cx);
+          var ny = snap(item.node.y * height, cy);
+          var near = false, d = Infinity;
+          if (hasPointer) {
+            d = Math.hypot(mx - nx, my - ny);
+            if (d < LINK_RADIUS) near = true;
+          }
+          item.mark.setAttribute("x", String(nx - 2.5));
+          item.mark.setAttribute("y", String(ny - 2.5));
+          item.mark.setAttribute("fill", near ? accent : fg);
+          item.mark.setAttribute("fill-opacity", near ? "0.8" : "0.28");
+          item.label.setAttribute("x", String(nx + 8));
+          item.label.setAttribute("y", String(ny - 8));
+          item.label.setAttribute("opacity", near ? "0.9" : "0");
+          if (near && hasPointer) {
+            var t = Math.max(0, 1 - d / LINK_RADIUS);
+            item.link.setAttribute("x1", String(nx));
+            item.link.setAttribute("y1", String(ny));
+            item.link.setAttribute("x2", String(sx));
+            item.link.setAttribute("y2", String(sy));
+            item.link.setAttribute("opacity", String(0.15 + t * 0.45));
+          } else {
+            item.link.setAttribute("opacity", "0");
+          }
+        });
+        traverse.setAttribute("points", stations.map(function (s) { return s.x + "," + s.y; }).join(" "));
+        while (stationMarks.childNodes.length > stations.length) stationMarks.removeChild(stationMarks.lastChild);
+        stations.forEach(function (s, i) {
+          var mark = stationMarks.childNodes[i];
+          if (!(mark instanceof SVGRectElement)) {
+            mark = el("rect", { width: "5", height: "5", fill: accent, "fill-opacity": "0.7" });
+            stationMarks.append(mark);
+          }
+          mark.setAttribute("x", String(s.x - 2.5));
+          mark.setAttribute("y", String(s.y - 2.5));
+        });
+        while (stakeMarks.childNodes.length > stakes.length * 3) stakeMarks.removeChild(stakeMarks.lastChild);
+        for (var s = stakes.length - 1; s >= 0; s--) {
+          var stake = stakes[s];
+          var tt = (now - stake.born) / STAKE_MS;
+          if (tt >= 1) { stakes.splice(s, 1); continue; }
+          var alpha = 1 - tt, rad = 6 + tt * 16;
+          var existingC = stakeMarks.childNodes[s * 3];
+          var existingH = stakeMarks.childNodes[s * 3 + 1];
+          var existingV = stakeMarks.childNodes[s * 3 + 2];
+          var circle = existingC instanceof SVGCircleElement ? existingC : el("circle", { fill: "none", stroke: accent, "stroke-width": "1" });
+          var sH = existingH instanceof SVGLineElement ? existingH : el("line", { stroke: accent, "stroke-width": "1" });
+          var sV = existingV instanceof SVGLineElement ? existingV : el("line", { stroke: accent, "stroke-width": "1" });
+          if (!(existingC instanceof SVGCircleElement)) stakeMarks.append(circle, sH, sV);
+          circle.setAttribute("cx", String(stake.x));
+          circle.setAttribute("cy", String(stake.y));
+          circle.setAttribute("r", String(rad));
+          circle.setAttribute("stroke-opacity", String(alpha * 0.7));
+          sH.setAttribute("x1", String(stake.x - 7)); sH.setAttribute("y1", String(stake.y));
+          sH.setAttribute("x2", String(stake.x + 7)); sH.setAttribute("y2", String(stake.y));
+          sH.setAttribute("stroke-opacity", String(alpha * 0.7));
+          sV.setAttribute("x1", String(stake.x)); sV.setAttribute("y1", String(stake.y - 7));
+          sV.setAttribute("x2", String(stake.x)); sV.setAttribute("y2", String(stake.y + 7));
+          sV.setAttribute("stroke-opacity", String(alpha * 0.7));
+        }
+        var oa = radius * 1.72, ob = radius * 0.58, ang = now / 2400;
+        var px = cx + Math.cos(ang) * oa, py = cy + Math.sin(ang) * ob;
+        craft.setAttribute("x", String(px - 2.5)); craft.setAttribute("y", String(py - 2.5));
+        trailPts.push({ x: px, y: py });
+        if (trailPts.length > 96) trailPts.shift();
+        trail.setAttribute("points", trailPts.map(function (p) { return p.x + "," + p.y; }).join(" "));
+        var iang = now / -1100, ir = radius * 0.62;
+        innerCraft.setAttribute("cx", String(Math.sin(iang) * ir));
+        innerCraft.setAttribute("cy", String(-Math.cos(iang) * ir));
+        var u = (now % 4200) / 4200;
+        ping.setAttribute("r", String(radius * 0.18 + u * radius * 2.1));
+        ping.setAttribute("stroke-opacity", String((1 - u) * 0.38));
+        raf = requestAnimationFrame(draw);
+      }
+      function kick() {
+        if (running) return;
+        running = true;
+        raf = requestAnimationFrame(draw);
+      }
+      function readSize() {
+        var vv = window.visualViewport;
+        width = Math.ceil(Math.max(window.innerWidth, vv ? vv.width : 0));
+        height = Math.ceil(Math.max(
+          window.innerHeight,
+          document.documentElement.clientHeight,
+          vv ? vv.height + vv.offsetTop : 0
+        ));
+        svg.setAttribute("viewBox", "0 0 " + width + " " + height);
+        layoutInstrument();
+      }
+      readSize();
+      kick();
+      window.addEventListener("pointermove", function (e) {
+        hasPointer = true; mx = e.clientX; my = e.clientY; kick();
+      }, { passive: true });
+      document.documentElement.addEventListener("mouseleave", function () {
+        hasPointer = false; kick();
+      });
+      window.addEventListener("click", function (e) {
+        if (e.target.closest("a, button")) return;
+        stakes.push({ x: snap(e.clientX, cx), y: snap(e.clientY, cy), born: performance.now() });
+        stations.push({ x: snap(e.clientX, cx), y: snap(e.clientY, cy) });
+        if (stations.length > 8) stations.shift();
+        kick();
+      });
+      window.addEventListener("resize", function () { readSize(); kick(); });
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener("resize", function () { readSize(); kick(); });
+        window.visualViewport.addEventListener("scroll", function () { readSize(); kick(); });
+      }
+    })();
+  </script>
+</body>
+</html>
