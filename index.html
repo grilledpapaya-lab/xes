@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="paper">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -7,6 +7,7 @@
   <meta name="description" content="PROJECT 19" />
   <meta name="theme-color" content="#F5F4F0" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <script>(function(){try{var t=localStorage.getItem("p19-theme");if(t!=="paper"&&t!=="ink"){t=matchMedia("(prefers-color-scheme: dark)").matches?"ink":"paper"}document.documentElement.setAttribute("data-theme",t);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",t==="ink"?"#131311":"#F5F4F0")}catch(e){}})();</script>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -27,11 +28,25 @@
       --text-kicker: 0.75rem;
       --tracking-kicker: 0.16em;
     }
+    html[data-theme="ink"] {
+      color-scheme: dark;
+      --bg: #131311;
+      --fg: #e6e3d8;
+      --muted: #8f8c83;
+      --subtle: #6a6860;
+      --border: #2e2d28;
+      --accent: #8aa7c4;
+      --grid-fine: color-mix(in oklab, var(--fg) 10%, transparent);
+      --grid-major: color-mix(in oklab, var(--fg) 18%, transparent);
+    }
+
     * { box-sizing: border-box; }
     html {
       -webkit-font-smoothing: antialiased;
+      color-scheme: light;
       background: var(--bg);
       color: var(--fg);
+      transition: background-color 320ms ease, color 320ms ease;
       overflow: hidden;
       min-height: 100%;
       min-height: 100lvh;
@@ -134,6 +149,31 @@
       text-transform: uppercase; letter-spacing: var(--tracking-kicker);
       color: color-mix(in oklab, var(--fg) 70%, transparent);
     }
+    .mode {
+      position: absolute; top: 1.25rem; left: 1.25rem; z-index: 20;
+      display: flex; align-items: center; gap: 0.75rem;
+      min-height: 44px; padding: 0; border: 0; background: none; cursor: pointer;
+      font-family: var(--font-mono); font-size: var(--text-label);
+      letter-spacing: var(--tracking-kicker); text-transform: uppercase;
+      color: color-mix(in oklab, var(--fg) 35%, transparent);
+    }
+    @media (min-width: 640px) { .mode { top: 1.5rem; left: 2rem; } }
+    .mode:hover { color: color-mix(in oklab, var(--fg) 70%, transparent); }
+    .mode [data-mode] { opacity: 0.4; }
+    html:not([data-theme="ink"]) .mode [data-mode="paper"],
+    html[data-theme="ink"] .mode [data-mode="ink"] {
+      opacity: 1; color: color-mix(in oklab, var(--fg) 75%, transparent);
+    }
+    .track {
+      position: relative; width: 2rem; height: 0.75rem;
+      border: 1px solid currentColor; flex-shrink: 0;
+    }
+    .knob {
+      position: absolute; top: 1px; left: 1px; width: 8px; height: 8px;
+      background: currentColor;
+      transition: transform 200ms ease-out;
+    }
+    html[data-theme="ink"] .knob { transform: translateX(16px); }
     .gate {
       position: absolute; left: 50%; bottom: 4rem; transform: translateX(-50%);
       z-index: 20;
@@ -198,6 +238,7 @@
     .instrument-sweep { transform-origin: 0px 0px; animation: instrument-spin 72s linear infinite; }
     @keyframes instrument-spin { to { transform: rotate(360deg); } }
     @media (prefers-reduced-motion: reduce) {
+      html { transition: none; }
       .instrument-sweep { animation: none; }
       html { background-attachment: scroll; }
     }
@@ -237,6 +278,11 @@
           <div class="scale-n"><span>0</span><span>4</span></div>
         </div>
       </div>
+            <button type="button" class="mode" aria-pressed="false" aria-label="Switch to ink">
+        <span data-mode="paper">Paper</span>
+        <span class="track" aria-hidden="true"><span class="knob"></span></span>
+        <span data-mode="ink">Ink</span>
+      </button>
       <a class="gate" href="./menu.html">ENTER</a>
     </main>
 
@@ -289,7 +335,7 @@
         return n;
       }
       function snap(n, origin) { return origin + Math.round((n - origin) / CELL) * CELL; }
-      var fg = "#161615", accent = "#2c4a6b";
+      var fg = "var(--fg)", accent = "var(--accent)";
       var width = 0, height = 0, cx = 0, cy = 0, radius = 120, ax = 0, ay = 0, bx = 0, by = 0, plateLeft = 0, plateWidth = 1, scaleU = 0.5;
       var mx = -1, my = -1, hasPointer = false, raf = 0, running = false, stakes = [], stations = [];
 
@@ -627,6 +673,25 @@
         window.visualViewport.addEventListener("scroll", function () { readSize(); kick(); });
       }
     })();
-  </script>
+  
+    (function () {
+      var btn = document.querySelector(".mode");
+      if (!btn) return;
+      function sync() {
+        var ink = document.documentElement.getAttribute("data-theme") === "ink";
+        btn.setAttribute("aria-pressed", ink ? "true" : "false");
+        btn.setAttribute("aria-label", ink ? "Switch to paper" : "Switch to ink");
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute("content", ink ? "#131311" : "#F5F4F0");
+      }
+      btn.addEventListener("click", function () {
+        var next = document.documentElement.getAttribute("data-theme") === "ink" ? "paper" : "ink";
+        document.documentElement.setAttribute("data-theme", next);
+        try { localStorage.setItem("p19-theme", next); } catch (e) {}
+        sync();
+      });
+      sync();
+    })();
+</script>
 </body>
 </html>
